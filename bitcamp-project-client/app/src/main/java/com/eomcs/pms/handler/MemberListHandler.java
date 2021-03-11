@@ -3,14 +3,14 @@ package com.eomcs.pms.handler;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
-public class BoardListHandler implements Command {
+public class MemberListHandler implements Command {
 
   @Override
   public void service(DataInputStream in, DataOutputStream out) throws Exception {
-    System.out.println("[게시글 목록]");
+    System.out.println("[회원 목록]");
 
-    // 서버에 게시글 목록을 달라고 요청한다.
-    out.writeUTF("board/selectall");
+    // 서버에 데이터 목록을 달라고 요청한다.
+    out.writeUTF("member/selectall");
     out.writeInt(0);
     out.flush();
 
@@ -26,7 +26,7 @@ public class BoardListHandler implements Command {
     for (int i = 0; i < length; i++) {
       String[] fields = in.readUTF().split(",");
 
-      System.out.printf("%s, %s, %s, %s, %s\n", 
+      System.out.printf("%s, %s, %s, %s, %s\n",
           fields[0], 
           fields[1], 
           fields[2],
