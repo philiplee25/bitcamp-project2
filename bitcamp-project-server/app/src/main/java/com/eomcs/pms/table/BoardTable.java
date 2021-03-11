@@ -1,11 +1,12 @@
 package com.eomcs.pms.table;
 
-import java.io.DataOutputStream;
 import java.io.File;
 import java.sql.Date;
 import java.util.List;
 import com.eomcs.pms.domain.Board;
 import com.eomcs.util.JsonFileHandler;
+import com.eomcs.util.Request;
+import com.eomcs.util.Response;
 
 // 1) 간단한 동작 테스트를 위해 임의의 값을 리턴한다.
 // 2) JSON 포맷의 파일을 로딩한다.
@@ -19,14 +20,15 @@ public class BoardTable implements DataTable {
   }
 
   @Override
-  public void service(String command, List<String> data, DataOutputStream out) throws Exception {
+  public void service(Request request, Response response) throws Exception {
     Board board = null;
+    String[] fields = null;
 
-    switch (command) {
+    switch (request.getCommand()) {
       case "board/insert":
 
         // data에서 CSV 형식으로 표현된 문자열을 꺼내 각 필드 값으로 분리한다.
-        String[] fields = data.get(0).split(",");
+        fields = request.getData().get(0).split(",");
 
         // CSV 데이터를 Board 객체에 저장한다.
         board = new Board();
@@ -46,27 +48,26 @@ public class BoardTable implements DataTable {
         // 새 게시글을 담은 Board 객체를 목록에 저장한다.
         list.add(board);
 
-        // 클라이언트에게 작업 성공을 알린다.
-        out.writeUTF("success");
-        out.writeInt(0);
+        // 게시글을 목록에 추가하는 즉시 List 컬렉션의 전체 데이터를 파일에 저장한다.
+        // - 매번 전체 데이터를 파일에 저장하는 것은 비효율적이다.
+        // - 효율성에 대한 부분은 무시한다.
+        // - 현재 중요한 것은 서버 애플리케이션에서 데이터 파일을 관리한다는 점이다.
+        // - 어차피 이 애플리케이션은 진정한 성능을 제공하는 DBMS으로 교체할 것이다.
+        // 
+        JsonFileHandler.saveObjects(jsonFile, list);
         break;
       case "board/selectall":
-        out.writeUTF("success");
-        out.writeInt(list.size());
-
         for (Board b : list) {
-          out.writeUTF(String.format("%d,%s,%s,%s,%d", 
+          response.appendData(String.format("%d,%s,%s,%s,%d", 
               b.getNo(), b.getTitle(), b.getWriter(), b.getRegisteredDate(), b.getViewCount()));
         }
         break;
       case "board/select":
-        int no = Integer.parseInt(data.get(0));
+        int no = Integer.parseInt(request.getData().get(0));
 
         board = getBoard(no);
         if (board != null) {
-          out.writeUTF("success");
-          out.writeInt(1);
-          out.writeUTF(String.format("%d,%s,%s,%s,%s,%d", 
+          response.appendData(String.format("%d,%s,%s,%s,%s,%d", 
               board.getNo(), 
               board.getTitle(), 
               board.getContent(),
@@ -74,23 +75,40 @@ public class BoardTable implements DataTable {
               board.getRegisteredDate(), 
               board.getViewCount()));
         } else {
-          out.writeUTF("error");
-          out.writeInt(1);
-          out.writeUTF("해당 번호의 게시글이 없습니다.");
+          throw new Exception("해당 번호의 게시글이 없습니다.");
         }
         break;
+      case "board/selectByKeyword":
+        break;
       case "board/update":
-        out.writeUTF("success");
-        out.writeInt(0);
+        fields = request.getData().get(0).split(",");
+
+        board = getBoard(Integer.parseInt(fields[0]));
+        if (board == null) {
+          throw new Exception("해당 번호의 게시글이 없습니다.");
+        }
+
+        // 해당 게시물의 제목과 내용을 변경한다.
+        // - List 에 보관된 객체를 꺼낸 것이기 때문에 
+        //   그냥 그 객체의 값을 변경하면 된다.
+        board.setTitle(fields[1]);
+        board.setContent(fields[2]);
+
+        JsonFileHandler.saveObjects(jsonFile, list);
         break;
       case "board/delete":
-        out.writeUTF("success");
-        out.writeInt(0);
+        no = Integer.parseInt(request.getData().get(0));
+        board = getBoard(no);
+        if (board == null) {
+          throw new Exception("해당 번호의 게시글이 없습니다.");
+        }
+
+        list.remove(board);
+
+        JsonFileHandler.saveObjects(jsonFile, list);
         break;
       default:
-        out.writeUTF("error");
-        out.writeInt(1);
-        out.writeUTF("해당 명령을 처리할 수 없습니다.");
+        throw new Exception("해당 명령을 처리할 수 없습니다.");
     }
   }
 
