@@ -19,25 +19,22 @@ import com.eomcs.util.Response;
 //1) 외부의 스레드 사용
 //2) 스태틱 중첩 클래스로 정의한 스레드 사용
 //3) inner 클래스로 정의한 스레드 사용
-//4) 로컬 클래스로 정의한 스레드 사용
-//5) 익명 클래스로 정의한 스레드 사용
-//6) 직접 스레드를 만들지 않고 스레드 객체사 사용할 Runnable 구현체를 정의한다.
-//7) Runnable 구현체를 lambda 문법으로 정의한다.
-public class ServerApp {
+public class ServerApp03 {
 
   int port;
   HashMap<String,DataTable> tableMap = new HashMap<>();
 
   public static void main(String[] args) {
-    ServerApp app = new ServerApp(8888);
+    ServerApp03 app = new ServerApp03(8888);
     app.service();
   }
 
-  public ServerApp(int port) {
+  public ServerApp03(int port) {
     this.port = port;
   }
 
   public void service() {
+
     // 요청을 처리할 테이블 객체를 준비한다.
     tableMap.put("board/", new BoardTable());
     tableMap.put("member/", new MemberTable());
@@ -50,8 +47,7 @@ public class ServerApp {
       System.out.println("서버 실행!");
 
       while (true) {
-        Socket socket = serverSocket.accept();
-        new Thread(() -> processRequest(socket)).start();
+        new StatementHandlerThread3(serverSocket.accept()).start();
       }
 
     } catch (Exception e) {
@@ -155,6 +151,27 @@ public class ServerApp {
       System.out.println("클라이언트의 요청을 처리하는 중에 오류 발생!");
       e.printStackTrace();
     }
+
   }
+
+  // non-static 중첩 클래스 = inner 클래스
+  // - inner 클래스는 바깥 클래스 입장에서 인스턴스 멤버이다.
+  // - 따라서 바깥 클래스에 소속된 다른 인스턴스 멤버(필드나 메서드)에 바로 접근할 수 있다. 
+  class StatementHandlerThread3 extends Thread {
+
+    Socket socket;
+
+    public StatementHandlerThread3(Socket socket) {
+      this.socket = socket;
+    }
+
+    @Override
+    public void run() {
+      // 별도의 실행 흐름에서 수행할 작업이 있다면 이 메서드에 기술한다.
+      processRequest(this.socket);
+    }
+  }
+
+
 
 }
