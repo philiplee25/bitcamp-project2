@@ -111,14 +111,5 @@ public class Task {
     this.status = status;
   }
 
-  public static String getStatusLabel(int status) {
-    switch (status) {
-      case 1:
-        return "진행중";
-      case 2:
-        return "완료";
-      default:
-        return "신규";
-    }
-  }
+
 }
