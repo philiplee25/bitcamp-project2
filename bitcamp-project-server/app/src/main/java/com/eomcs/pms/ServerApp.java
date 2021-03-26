@@ -16,17 +16,17 @@ import com.eomcs.pms.table.TaskTable;
 import com.eomcs.util.Request;
 import com.eomcs.util.Response;
 
-//1) 외부의 스레드 사용
-//2) 스태틱 중첩 클래스로 정의한 스레드 사용
-//3) inner 클래스로 정의한 스레드 사용
-//4) 로컬 클래스로 정의한 스레드 사용
-//5) 익명 클래스로 정의한 스레드 사용
-//6) 직접 스레드를 만들지 않고 스레드 객체사 사용할 Runnable 구현체를 정의한다.
-//7) Runnable 구현체를 lambda 문법으로 정의한다.
+// 1) 외부의 스레드 사용
+// 2) 스태틱 중첩 클래스로 정의한 스레드 사용
+// 3) inner 클래스로 정의한 스레드 사용
+// 4) 로컬 클래스로 정의한 스레드 사용
+// 5) 익명 클래스로 정의한 스레드 사용
+// 6) 직접 스레드를 만들지 않고 스레드 객체사 사용할 Runnable 구현체를 정의한다.
+// 7) Runnable 구현체를 lambda 문법으로 정의한다.
 public class ServerApp {
 
   int port;
-  HashMap<String,DataTable> tableMap = new HashMap<>();
+  HashMap<String, DataTable> tableMap = new HashMap<>();
 
   public static void main(String[] args) {
     ServerApp app = new ServerApp(8888);
@@ -133,16 +133,12 @@ public class ServerApp {
         if (dataTable != null) {
           Response response = new Response();
           try {
-            dataTable.service(request, response);          
-            sendResponse(
-                out, 
-                "success", 
+            dataTable.service(request, response);
+            sendResponse(out, "success",
                 response.getDataList().toArray(new String[response.getDataList().size()]));
 
           } catch (Exception e) {
-            sendResponse(
-                out, 
-                "error", 
+            sendResponse(out, "error",
                 e.getMessage() != null ? e.getMessage() : e.getClass().getName());
           }
 

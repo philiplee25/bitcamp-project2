@@ -23,6 +23,7 @@ repositories {
 dependencies {
     testImplementation 'junit:junit:4.13'
     implementation 'com.google.guava:guava:29.0-jre'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.2'
 }
 
 application {
