@@ -33,17 +33,16 @@ public class MemberValidator {
     }
   }
 
-  public String inputMembers(String promptTitle) throws Exception {
-    String members = "";
+  public List<Member> inputMembers(String promptTitle) throws Exception {
+    ArrayList<Member> members = new ArrayList<>();
+    
+
     while (true) {
-      String name = inputMember(promptTitle);
-      if (name == null) {
+      Member member = inputMember(promptTitle);
+      if (member == null) {
         return members;
       } else {
-        if (!members.isEmpty()) {
-          members += "/";
-        }
-        members += name;
+      members.add(members);
       }
     }
   }
