@@ -3,7 +3,6 @@ package com.eomcs.pms.handler;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import com.eomcs.driver.Statement;
 import com.eomcs.util.Prompt;
 
 public class TaskDeleteHandler implements Command {

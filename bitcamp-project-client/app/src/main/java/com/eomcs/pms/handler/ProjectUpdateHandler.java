@@ -79,7 +79,7 @@ public class ProjectUpdateHandler implements Command {
       stmt2.setInt(7, project.getNo());
       stmt2.executeUpdate();
 
-      System.out.println("프로젝트를 변경하였습니다.");
+      System.out.println("프로젝트을 변경하였습니다.");
     }
   }
 
