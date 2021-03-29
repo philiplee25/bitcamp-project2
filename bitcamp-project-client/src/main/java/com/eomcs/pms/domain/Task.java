@@ -8,11 +8,14 @@ public class Task {
   private Date deadline;
   private Member owner;
   private int status;
+  private int projectNo;
+  private String projectTitle;
 
   @Override
   public String toString() {
     return "Task [no=" + no + ", content=" + content + ", deadline=" + deadline + ", owner=" + owner
-        + ", status=" + status + "]";
+        + ", status=" + status + ", projectNo=" + projectNo + ", projectTitle=" + projectTitle
+        + "]";
   }
   public int getNo() {
     return no;
@@ -44,6 +47,19 @@ public class Task {
   public void setOwner(Member owner) {
     this.owner = owner;
   }
+  public int getProjectNo() {
+    return projectNo;
+  }
+  public void setProjectNo(int projectNo) {
+    this.projectNo = projectNo;
+  }
+  public String getProjectTitle() {
+    return projectTitle;
+  }
+  public void setProjectTitle(String projectTitle) {
+    this.projectTitle = projectTitle;
+  }
+
   public static String getStatusLabel(int status) {
     switch (status) {
       case 1:
