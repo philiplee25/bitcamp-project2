@@ -17,7 +17,17 @@ public class BoardDetailHandler implements Command {
     try (Connection con = DriverManager.getConnection( //
         "jdbc:mysql://localhost:3306/studydb?user=study&password=1111");
         PreparedStatement stmt = con.prepareStatement( //
-            "select * from pms_board where no = ?")) {
+            "select"
+            + " b.no,"
+            + " b.title,"
+            + " b.content,"
+            + " b.cdt,"
+            + " b.vw_cnt,"
+            + " b.like_cnt,"
+            + " m.name as writer_name"
+            + " from pms_board b"
+            + "   inner join pms_member m on m.no=b.writer"
+            + " where b.no = ?")) {
 
       stmt.setInt(1, no);
 
@@ -29,7 +39,7 @@ public class BoardDetailHandler implements Command {
 
         System.out.printf("제목: %s\n", rs.getString("title"));
         System.out.printf("내용: %s\n", rs.getString("content"));
-        System.out.printf("작성자: %s\n", rs.getString("writer"));
+        System.out.printf("작성자: %s\n", rs.getString("writer_name"));
         System.out.printf("등록일: %s %s\n", rs.getDate("cdt"), rs.getTime("cdt"));
         System.out.printf("조회수: %s\n", rs.getString("vw_cnt"));
         System.out.printf("좋아요: %s\n", rs.getString("like_cnt"));

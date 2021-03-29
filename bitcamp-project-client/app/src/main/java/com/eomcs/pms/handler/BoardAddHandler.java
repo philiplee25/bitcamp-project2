@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import com.eomcs.pms.domain.Board;
+import com.eomcs.pms.domain.Member;
 import com.eomcs.util.Prompt;
 
 public class BoardAddHandler implements Command {
@@ -16,7 +17,10 @@ public class BoardAddHandler implements Command {
 
     b.setTitle(Prompt.inputString("제목? "));
     b.setContent(Prompt.inputString("내용? "));
-    b.setWriter(Prompt.inputString("작성자? "));
+
+    Member writer = new Member();
+    writer.setNo(Prompt.inputInt("작성자 번호? "));
+    b.setWriter(writer);
 
     try (Connection con = DriverManager.getConnection(
         "jdbc:mysql://localhost:3306/studydb?user=study&password=1111");
@@ -25,7 +29,7 @@ public class BoardAddHandler implements Command {
 
       stmt.setString(1, b.getTitle());
       stmt.setString(2, b.getContent());
-      stmt.setString(3, b.getWriter());
+      stmt.setInt(3, b.getWriter().getNo());
 
       stmt.executeUpdate();
 
