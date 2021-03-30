@@ -2,7 +2,6 @@ package com.eomcs.pms.dao;
 
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -10,21 +9,18 @@ import java.util.List;
 import com.eomcs.pms.domain.Board;
 import com.eomcs.pms.domain.Member;
 
-// 한 번에 4번째 단계까지 가지말고 일단 3번째와 4번째 단계 사이에 있는 정도로 구현을 해보자.
-// - 각 DAO 클래스는 Connection 객체를 공유하기 위해 인스턴스 필드로 선언한다.
-// - 각 DAO 클래스는 DAO 인스턴스가 생성될 때 Connection 객체를 만든다.
-public class BoardDao {
+//1) 메서드를 호출 할 때 마다 Connection 객체 생성
+//- 즉 DBMS에 연결
+//2) 클래스가 로딩될 때 미리 Connection 객체 생성
+//- DAO 당 한 번만 DBMS에 연결
+//3) 여러 DAO가 Connection 객체를 공유할 수 있도록 외부에서 생성한 후 주입한다.
+public class BoardDao03 {
 
-  Connection con;
+  // 외부에서 주입할 수 있도록 필드의 접근 범위를 public으로 확대한다.
+  // - 이 클래스의 메서드를 호출하기 전에 반드시 먼저 Connection 객체를 주입해야 한다. 
+  public static Connection con;
 
-  public BoardDao() throws Exception {
-    this.con = DriverManager.getConnection(
-        "jdbc:mysql://localhost:3306/studydb?user=study&password=1111");
-  }
-
-  // 이제 메서드들은 인스턴스 필드에 들어있는 Connection 객체를 사용해야 하기 때문에
-  // 스태틱 메서드가 아닌 인스턴스 메서드로 선언해야 한다.
-  public int insert(Board board) throws Exception {
+  public static int insert(Board board) throws Exception {
     try (PreparedStatement stmt = con.prepareStatement(
         "insert into pms_board(title, content, writer) values(?,?,?)");) {
 
@@ -36,7 +32,7 @@ public class BoardDao {
     } 
   }
 
-  public List<Board> findAll() throws Exception {
+  public static List<Board> findAll() throws Exception {
     ArrayList<Board> list = new ArrayList<>();
 
     try (PreparedStatement stmt = con.prepareStatement(
@@ -72,7 +68,7 @@ public class BoardDao {
     return list;
   }
 
-  public Board findByNo(int no) throws Exception {
+  public static Board findByNo(int no) throws Exception {
     try (PreparedStatement stmt = con.prepareStatement(
         "select"
             + " b.no,"
@@ -112,7 +108,7 @@ public class BoardDao {
     }
   }
 
-  public int update(Board board) throws Exception {
+  public static int update(Board board) throws Exception {
     try (PreparedStatement stmt = con.prepareStatement(
         "update pms_board set title=?, content=? where no=?")) {
 
@@ -123,7 +119,7 @@ public class BoardDao {
     }
   }
 
-  public int updateViewCount(int no) throws Exception {
+  public static int updateViewCount(int no) throws Exception {
     try (PreparedStatement stmt = con.prepareStatement(
         "update pms_board set vw_cnt=vw_cnt + 1 where no=?")) {
       stmt.setInt(1, no);
@@ -131,7 +127,7 @@ public class BoardDao {
     }
   }
 
-  public int delete(int no) throws Exception {
+  public static int delete(int no) throws Exception {
     try (PreparedStatement stmt = con.prepareStatement(
         "delete from pms_board where no=?")) {
       stmt.setInt(1, no);
@@ -139,7 +135,7 @@ public class BoardDao {
     }
   }
 
-  public List<Board> findByKeyword(String keyword) throws Exception {
+  public static List<Board> findByKeyword(String keyword) throws Exception {
     ArrayList<Board> list = new ArrayList<>();
 
     try (PreparedStatement stmt = con.prepareStatement(
