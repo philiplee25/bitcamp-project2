@@ -9,13 +9,13 @@ import com.eomcs.util.Prompt;
 
 public class TaskAddHandler implements Command {
 
-  ProjectDao projectDao;
   TaskDao taskDao;
+  ProjectDao projectDao;
   MemberValidator memberValidator;
 
-  public TaskAddHandler(ProjectDao projectDao, TaskDao taskDao, MemberValidator memberValidator) {
-    this.projectDao = projectDao;
+  public TaskAddHandler(TaskDao taskDao, ProjectDao projectDao, MemberValidator memberValidator) {
     this.taskDao = taskDao;
+    this.projectDao = projectDao;
     this.memberValidator = memberValidator;
   }
 
@@ -61,6 +61,7 @@ public class TaskAddHandler implements Command {
 
     // 4) 작업 정보를 입력 받는다.
     Task t = new Task();
+    t.setProjectNo(selectedProjectNo);
     t.setContent(Prompt.inputString("내용? "));
     t.setDeadline(Prompt.inputDate("마감일? "));
     t.setStatus(Prompt.inputInt("상태?\n0: 신규\n1: 진행중\n2: 완료\n> "));
@@ -70,8 +71,6 @@ public class TaskAddHandler implements Command {
       System.out.println("작업 등록을 취소하였습니다.");
       return;
     }
-
-    t.setProjectNo(selectedProjectNo);
 
     taskDao.insert(t);
 

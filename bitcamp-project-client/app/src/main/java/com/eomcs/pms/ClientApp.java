@@ -91,11 +91,11 @@ public class ClientApp {
     commandMap.put("/project/update", new ProjectUpdateHandler(projectDao, memberValidator));
     commandMap.put("/project/delete", new ProjectDeleteHandler(projectDao));
 
-    commandMap.put("/task/add", new TaskAddHandler(projectDao, taskDao, memberValidator));
+    commandMap.put("/task/add", new TaskAddHandler(taskDao, projectDao, memberValidator));
     commandMap.put("/task/list", new TaskListHandler(taskDao));
-    commandMap.put("/task/detail", new TaskDetailHandler());
-    commandMap.put("/task/update", new TaskUpdateHandler(memberValidator));
-    commandMap.put("/task/delete", new TaskDeleteHandler());
+    commandMap.put("/task/detail", new TaskDetailHandler(taskDao));
+    commandMap.put("/task/update", new TaskUpdateHandler(taskDao, projectDao, memberValidator));
+    commandMap.put("/task/delete", new TaskDeleteHandler(taskDao));
 
     try {
 
@@ -116,7 +116,7 @@ public class ClientApp {
             case "history":
               printCommandHistory(commandStack.iterator());
               break;
-            case "history2": 
+            case "history2":
               printCommandHistory(commandQueue.iterator());
               break;
             case "quit":

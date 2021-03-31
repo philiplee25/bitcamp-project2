@@ -89,20 +89,22 @@ public class TaskDao {
       return list;
     }
   }
-  /*
+
   public Task findByNo(int no) throws Exception {
     try (PreparedStatement stmt = con.prepareStatement(
-        "select"
-            + "    p.no,"
-            + "    p.title,"
-            + "    p.content,"
-            + "    p.sdt,"
-            + "    p.edt,"
-            + "    m.no as owner_no,"
-            + "    m.name as owner_name"
-            + "  from pms_task p"
-            + "    inner join pms_member m on p.owner=m.no"
-            + " where p.no=?")) {
+        "select "
+            + "   t.no,"
+            + "   t.content,"
+            + "   t.deadline,"
+            + "   t.status,"
+            + "   m.no as owner_no,"
+            + "   m.name as owner_name,"
+            + "   p.no as project_no,"
+            + "   p.title as project_title"
+            + " from pms_task t "
+            + "   inner join pms_member m on t.owner=m.no"
+            + "   inner join pms_project p on t.project_no=p.no"
+            + " where t.no=?")) {
 
       stmt.setInt(1, no);
 
@@ -113,17 +115,17 @@ public class TaskDao {
 
         Task task = new Task();
         task.setNo(rs.getInt("no"));
-        task.setTitle(rs.getString("title"));
         task.setContent(rs.getString("content"));
-        task.setStartDate(rs.getDate("sdt"));
-        task.setEndDate(rs.getDate("edt"));
+        task.setDeadline(rs.getDate("deadline"));
+        task.setStatus(rs.getInt("status"));
 
         Member owner = new Member();
         owner.setNo(rs.getInt("owner_no"));
         owner.setName(rs.getString("owner_name"));
         task.setOwner(owner);
 
-        task.setMembers(findAllMembers(task.getNo()));
+        task.setProjectNo(rs.getInt("project_no"));
+        task.setProjectTitle(rs.getString("project_title"));
 
         return task;
       }
@@ -132,39 +134,15 @@ public class TaskDao {
 
   public int update(Task task) throws Exception {
     try (PreparedStatement stmt = con.prepareStatement(
-        "update pms_task set"
-            + " title=?,"
-            + " content=?,"
-            + " sdt=?,"
-            + " edt=?,"
-            + " owner=?"
-            + " where no=?")) {
+        "update pms_task set content=?,deadline=?,owner=?,status=?,project_no=? where no=?")) {
 
-      con.setAutoCommit(false);
-
-      stmt.setString(1, task.getTitle());
-      stmt.setString(2, task.getContent());
-      stmt.setDate(3, task.getStartDate());
-      stmt.setDate(4, task.getEndDate());
-      stmt.setInt(5, task.getOwner().getNo());
+      stmt.setString(1, task.getContent());
+      stmt.setDate(2, task.getDeadline());
+      stmt.setInt(3, task.getOwner().getNo());
+      stmt.setInt(4, task.getStatus());
+      stmt.setInt(5, task.getProjectNo());
       stmt.setInt(6, task.getNo());
-      int count = stmt.executeUpdate();
-
-      // 기존 프로젝트의 모든 멤버를 삭제한다.
-      deleteMembers(task.getNo());
-
-      // 프로젝트 멤버를 추가한다.
-      for (Member member : task.getMembers()) {
-        insertMember(task.getNo(), member.getNo());
-      }
-
-      con.commit();
-
-      return count;
-
-    } finally {
-      // 트랜잭션 종료 후 auto commit 을 원래 상태로 설정한다.
-      con.setAutoCommit(true);
+      return stmt.executeUpdate();
     }
   }
 
@@ -172,24 +150,11 @@ public class TaskDao {
     try (PreparedStatement stmt = con.prepareStatement(
         "delete from pms_task where no=?")) {
 
-      con.setAutoCommit(false);
-
-      // 프로젝트에 소속된 팀원 정보 삭제
-      deleteMembers(no);
-
-      // 프로젝트 정보 삭제
       stmt.setInt(1, no);
-      int count = stmt.executeUpdate();
-      con.commit();
-
-      return count;
-
-    } finally {
-      // 트랜잭션 종료 후 auto commit 을 원래 상태로 설정한다.
-      con.setAutoCommit(true);
+      return stmt.executeUpdate();
     }
   }
-   */
+
 }
 
 
