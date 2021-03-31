@@ -1,35 +1,41 @@
 package com.eomcs.pms.handler;
 
-import java.util.List;
-import com.eomcs.pms.dao.BoardDao;
-import com.eomcs.pms.domain.Board;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class BoardListHandler implements Command {
-
-
-  // 핸들러가 사용할 DAO : 의존 객체(dependency)
-  BoardDao boardDao;
-
-  // DAO 객체는 이 클래스가 작업하는데 필수 객체이기 때문에
-  // 생성자를 통해 반드시 주입 받도록 한다.
-  public BoardListHandler(BoardDao boardDao) {
-    this.boardDao = boardDao;
-  }
 
   @Override
   public void service() throws Exception {
     System.out.println("[게시글 목록]");
 
-    List<Board> boards = boardDao.findAll();
+    try (Connection con = DriverManager.getConnection(
+        "jdbc:mysql://localhost:3306/studydb?user=study&password=1111");
+        PreparedStatement stmt = con.prepareStatement(
+            "select"
+                + " b.no,"
+                + " b.title,"
+                + " b.cdt,"
+                + " b.vw_cnt,"
+                + " b.like_cnt,"
+                + " m.name as writer_name"
+                + " from pms_board b"
+                + "   inner join pms_member m on m.no=b.writer"
+                + " order by b.no desc");
+        ResultSet rs = stmt.executeQuery()) {
 
-    for (Board b : boards) {
-      System.out.printf("%d, %s, %s, %s, %d\n", 
-          b.getNo(), 
-          b.getTitle(), 
-          b.getWriter().getName(),
-          b.getRegisteredDate(),
-          b.getViewCount());
+      while (rs.next()) {
+        System.out.printf("%d, %s, %s, %s, %d\n", 
+            rs.getInt("no"), 
+            rs.getString("title"), 
+            rs.getString("writer_name"),
+            rs.getDate("cdt"),
+            rs.getInt("vw_cnt"));
+      }
     }
+
   }
 }
 

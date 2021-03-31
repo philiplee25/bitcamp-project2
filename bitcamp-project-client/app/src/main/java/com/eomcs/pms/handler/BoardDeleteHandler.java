@@ -1,18 +1,11 @@
 package com.eomcs.pms.handler;
 
-import com.eomcs.pms.dao.BoardDao;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import com.eomcs.util.Prompt;
 
 public class BoardDeleteHandler implements Command {
-
-  // 핸들러가 사용할 DAO : 의존 객체(dependency)
-  BoardDao boardDao;
-
-  // DAO 객체는 이 클래스가 작업하는데 필수 객체이기 때문에
-  // 생성자를 통해 반드시 주입 받도록 한다.
-  public BoardDeleteHandler(BoardDao boardDao) {
-    this.boardDao = boardDao;
-  }
 
   @Override
   public void service() throws Exception {
@@ -26,10 +19,17 @@ public class BoardDeleteHandler implements Command {
       return;
     }
 
-    if (boardDao.delete(no) == 0) {
-      System.out.println("해당 번호의 게시글이 없습니다.");
-    } else {
-      System.out.println("게시글을 삭제하였습니다.");
+    try (Connection con = DriverManager.getConnection(
+        "jdbc:mysql://localhost:3306/studydb?user=study&password=1111");
+        PreparedStatement stmt = con.prepareStatement(
+            "delete from pms_board where no=?")) {
+
+      stmt.setInt(1, no);
+      if (stmt.executeUpdate() == 0) {
+        System.out.println("해당 번호의 게시글이 없습니다.");
+      } else {
+        System.out.println("게시글을 삭제하였습니다.");
+      }
     }
   }
 }
