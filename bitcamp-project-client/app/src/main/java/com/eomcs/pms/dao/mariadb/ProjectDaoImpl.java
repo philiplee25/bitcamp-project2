@@ -40,6 +40,9 @@ public class ProjectDaoImpl implements ProjectDao {
       stmt.setInt(5, project.getOwner().getNo());
       int count = stmt.executeUpdate();
 
+      // 위의 입력을 수행한 후 일부로 다음 입력을 60초 정도 지연시킨다.
+      Thread.sleep(60000);
+
       // 프로젝트 데이터의 PK 값 알아내기
       try (ResultSet keyRs = stmt.getGeneratedKeys()) {
         keyRs.next();
