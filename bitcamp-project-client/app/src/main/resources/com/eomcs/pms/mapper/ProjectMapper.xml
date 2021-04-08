@@ -5,25 +5,42 @@
 
 <mapper namespace="ProjectMapper">
   
-  <resultMap id="projectMap" type="com.eomcs.pms.domain.Project">
+  <resultMap id="projectMap" type="project">
     <id column="no" property="no"/>
     <result column="title" property="title"/>
     <result column="content" property="content"/>
     <result column="sdt" property="startDate"/>
     <result column="edt" property="endDate"/>
     
-    <association property="owner" javaType="com.eomcs.pms.domain.Member">
+    <association property="owner" javaType="member">
 	    <id column="owner_no" property="no"/>
 	    <result column="owner_name" property="name"/>
     </association>
     
-    <collection property="members" ofType="com.eomcs.pms.domain.Member">
+    <collection property="members" ofType="member">
       <id column="member_no" property="no"/>
       <result column="member_name" property="name"/>
     </collection>
   </resultMap>
   
-  <insert id="insert" parameterType="com.eomcs.pms.domain.Project"
+  <sql id="select1">
+    select
+      p.no,
+      p.title,
+      p.sdt,
+      p.edt,
+      m.no as owner_no,
+      m.name as owner_name,
+      m2.no as member_no,
+      m2.name as member_name
+    from pms_project p
+      inner join pms_member m on p.owner=m.no
+      left outer join pms_member_project mp on mp.project_no=p.no
+      left outer join pms_member m2 on mp.member_no=m2.no
+  </sql>
+  
+  
+  <insert id="insert" parameterType="project"
           useGeneratedKeys="true" keyColumn="no" keyProperty="no">
     insert into pms_project(title,content,sdt,edt,owner) 
     values(#{title}, #{content}, #{startDate}, #{endDate}, #{owner.no})
@@ -53,20 +70,37 @@
     }
    -->
   
-  <select id="findAll" resultMap="projectMap">
-    select
-      p.no,
-      p.title,
-      p.sdt,
-      p.edt,
-      m.no as owner_no,
-      m.name as owner_name,
-      m2.no as member_no,
-      m2.name as member_name
-    from pms_project p
-      inner join pms_member m on p.owner=m.no
-      left outer join pms_member_project mp on mp.project_no=p.no
-      left outer join pms_member m2 on mp.member_no=m2.no
+  <select id="findByKeyword" resultMap="projectMap" parameterType="map">
+    <include refid="select1"/>
+    <where>
+	    <choose>
+		    <when test="item == 1">
+		    p.title like concat('%', #{keyword}, '%')
+		    </when>
+		    <when test="item == 2">
+		    m.name like concat('%', #{keyword}, '%')
+		    </when>
+		    <when test="item == 3">
+		    m2.name like concat('%', #{keyword}, '%')
+		    </when>
+	    </choose>
+    </where>
+    order by title asc
+  </select>
+  
+  <select id="findByKeywords" resultMap="projectMap" parameterType="map">
+    <include refid="select1"/>
+    <where>
+	    <if test="title != ''">
+	      p.title like concat('%', #{title}, '%')
+	    </if>
+	    <if test="owner != ''">
+	      and m.name = #{owner}
+	    </if>
+	    <if test="member != ''">
+	      and m2.name = #{member}
+	    </if>
+    </where>
     order by title asc
   </select>
   
@@ -88,7 +122,7 @@
     where p.no=#{value}
   </select>
   
-  <update id="update" parameterType="com.eomcs.pms.domain.Project">
+  <update id="update" parameterType="project">
     update pms_project set
       title=#{title},
       content=#{content},
@@ -109,12 +143,20 @@
     values(#{memberNo}, #{projectNo})
   </insert>
   
+  <insert id="insertMembers" parameterType="map">
+    insert into pms_member_project(member_no,project_no) 
+    values
+    <foreach collection="members" item="m" separator=",">
+      (#{m.no}, #{projectNo})
+    </foreach>
+  </insert>
+  
   <delete id="deleteMembers" parameterType="int">
     delete from pms_member_project 
     where project_no=#{value}
   </delete>
   
-  <select id="findAllMembers" resultType="com.eomcs.pms.domain.Member" parameterType="int">
+  <select id="findAllMembers" resultType="member" parameterType="int">
     select
       m.no,
       m.name

@@ -8,7 +8,9 @@ public interface ProjectDao {
 
   int insert(Project project) throws Exception;
 
-  List<Project> findAll() throws Exception;
+  List<Project> findByKeyword(String item, String keyword) throws Exception;
+
+  List<Project> findByKeywords(String title, String owner, String member) throws Exception;
 
   Project findByNo(int no) throws Exception;
 
@@ -17,6 +19,8 @@ public interface ProjectDao {
   int delete(int no) throws Exception;
 
   int insertMember(int projectNo, int memberNo) throws Exception;
+
+  int insertMembers(int projectNo, List<Member> members) throws Exception;
 
   List<Member> findAllMembers(int projectNo) throws Exception;
 

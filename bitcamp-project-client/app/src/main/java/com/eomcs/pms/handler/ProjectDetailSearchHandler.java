@@ -4,20 +4,25 @@ import java.util.List;
 import com.eomcs.pms.dao.ProjectDao;
 import com.eomcs.pms.domain.Member;
 import com.eomcs.pms.domain.Project;
+import com.eomcs.util.Prompt;
 
-public class ProjectListHandler implements Command {
+public class ProjectDetailSearchHandler implements Command {
 
   ProjectDao projectDao;
 
-  public ProjectListHandler(ProjectDao projectDao) {
+  public ProjectDetailSearchHandler(ProjectDao projectDao) {
     this.projectDao = projectDao;
   }
 
   @Override
   public void service() throws Exception {
-    System.out.println("[프로젝트 목록]");
+    System.out.println("[프로젝트 상세 검색]");
 
-    List<Project> projects = projectDao.findByKeyword(null, null);
+    String title = Prompt.inputString("프로젝트명?(조건에서 제외: 빈 문자열) ");
+    String owner = Prompt.inputString("관리자명?(조건에서 제외: 빈 문자열) ");
+    String member = Prompt.inputString("팀원?(조건에서 제외: 빈 문자열) ");
+
+    List<Project> projects = projectDao.findByKeywords(title, owner, member);
 
     for (Project p : projects) {
 

@@ -21,35 +21,38 @@ public class ProjectDaoImpl implements ProjectDao {
     int count = sqlSession.insert("ProjectMapper.insert", project);
 
     // 2) 프로젝트의 팀원 정보를 입력한다.
-    for (Member member : project.getMembers()) {
-      insertMember(project.getNo(), member.getNo());
-    }
+    //    for (Member member : project.getMembers()) {
+    //      insertMember(project.getNo(), member.getNo());
+    //    }
+    insertMembers(project.getNo(), project.getMembers());
 
     return count;
   }
 
   @Override
-  public List<Project> findAll() throws Exception {
-    // 1) 프로젝트 정보를 가져올 때 멤버 목록도 함께 가져오기
-    return sqlSession.selectList("ProjectMapper.findAll");
+  public List<Project> findByKeyword(String item, String keyword) throws Exception {
 
-    // 2) 프로젝트의 멤버 목록을 따로 가져오기
-    //    List<Project> projects = sqlSession.selectList("ProjectMapper.findAll");
-    //    for (Project p : projects) {
-    //      p.setMembers(findAllMembers(p.getNo()));
-    //    }
-    //    return projects;
+    HashMap<String,Object> params = new HashMap<>();
+    params.put("item", item);
+    params.put("keyword", keyword);
+
+    return sqlSession.selectList("ProjectMapper.findByKeyword", params);
+  }
+
+  @Override
+  public List<Project> findByKeywords(String title, String owner, String member) throws Exception {
+
+    HashMap<String,Object> params = new HashMap<>();
+    params.put("title", title);
+    params.put("owner", owner);
+    params.put("member", member);
+
+    return sqlSession.selectList("ProjectMapper.findByKeywords", params);
   }
 
   @Override
   public Project findByNo(int no) throws Exception {
-    // 1) 프로젝트 정보를 가져올 때 멤버 목록도 함께 가져오기
     return sqlSession.selectOne("ProjectMapper.findByNo", no);
-
-    // 2) 프로젝트의 멤버 목록을 따로 가져오기
-    //    Project project = sqlSession.selectOne("ProjectMapper.findByNo", no);
-    //    project.setMembers(findAllMembers(no));
-    //    return project;
   }
 
   @Override
@@ -61,9 +64,10 @@ public class ProjectDaoImpl implements ProjectDao {
     deleteMembers(project.getNo());
 
     // 3) 프로젝트 멤버를 추가한다.
-    for (Member member : project.getMembers()) {
-      insertMember(project.getNo(), member.getNo());
-    }
+    //    for (Member member : project.getMembers()) {
+    //      insertMember(project.getNo(), member.getNo());
+    //    }
+    insertMembers(project.getNo(), project.getMembers());
 
     return count;
   }
@@ -83,6 +87,14 @@ public class ProjectDaoImpl implements ProjectDao {
     params.put("projectNo", projectNo);
     params.put("memberNo", memberNo);
     return sqlSession.insert("ProjectMapper.insertMember", params);
+  }
+
+  @Override
+  public int insertMembers(int projectNo, List<Member> members) throws Exception {
+    HashMap<String,Object> params = new HashMap<>();
+    params.put("projectNo", projectNo);
+    params.put("members", members);
+    return sqlSession.insert("ProjectMapper.insertMembers", params);
   }
 
   @Override
