@@ -24,36 +24,46 @@ public class MemberService {
     this.memberDao = memberDao;
   }
 
+  // 등록 업무
   public int add(Member member) throws Exception {
     int count = memberDao.insert(member);
     sqlSession.commit();
     return count;
   }
 
+  // 조회 업무
   public List<Member> list() throws Exception {
     return memberDao.findAll();
   }
 
-  public Member detail(int no) throws Exception {
-    Member member = memberDao.findByNo(no);
-    sqlSession.commit();
-    return member;
+  // 상세 조회 업무
+  public Member get(int no) throws Exception {
+    return memberDao.findByNo(no);
   }
 
-  // 게시글 변경 업무
+  // 변경 업무
   public int update(Member member) throws Exception {
     int count = memberDao.update(member);
     sqlSession.commit();
     return count;
   }
 
-  // 게시글 삭제 업무
+  // 삭제 업무
   public int delete(int no) throws Exception {
     int count = memberDao.delete(no);
     sqlSession.commit();
     return count;
   }
 
+  // 이름으로 찾기
+  public Member search(String name) throws Exception {
+    return memberDao.findByName(name);
+  }
 }
+
+
+
+
+
 
 

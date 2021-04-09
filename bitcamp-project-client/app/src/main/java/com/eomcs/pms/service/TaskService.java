@@ -2,8 +2,8 @@ package com.eomcs.pms.service;
 
 import java.util.List;
 import org.apache.ibatis.session.SqlSession;
-import com.eomcs.pms.dao.MemberDao;
-import com.eomcs.pms.domain.Member;
+import com.eomcs.pms.dao.TaskDao;
+import com.eomcs.pms.domain.Task;
 
 // 서비스 객체
 // - 비즈니스 로직을 담고 있다.
@@ -17,43 +17,53 @@ public class TaskService {
   SqlSession sqlSession;
 
   // 비즈니스 로직을 수행하는 동안 데이터 처리를 위해 사용할 DAO 를 주입 받아야 한다.
-  MemberDao memberDao;
+  TaskDao taskDao;
 
-  public TaskService(SqlSession sqlSession, MemberDao memberDao) {
+  public TaskService(SqlSession sqlSession, TaskDao taskDao) {
     this.sqlSession = sqlSession;
-    this.memberDao = memberDao;
+    this.taskDao = taskDao;
   }
 
-  public int add(Member member) throws Exception {
-    int count = memberDao.insert(member);
+  // 등록 업무
+  public int add(Task task) throws Exception {
+    int count = taskDao.insert(task);
     sqlSession.commit();
     return count;
   }
 
-  public List<Member> list() throws Exception {
-    return memberDao.findAll();
+  // 조회 업무
+  public List<Task> list() throws Exception {
+    return taskDao.findAll();
   }
 
-  public Member detail(int no) throws Exception {
-    Member member = memberDao.findByNo(no);
-    sqlSession.commit();
-    return member;
+  public List<Task> listOfProject(int projectNo) throws Exception {
+    return taskDao.findByProjectNo(projectNo);
   }
 
-  // 게시글 변경 업무
-  public int update(Member member) throws Exception {
-    int count = memberDao.update(member);
+  // 상세 조회 업무
+  public Task get(int no) throws Exception {
+    return taskDao.findByNo(no);
+  }
+
+  // 변경 업무
+  public int update(Task task) throws Exception {
+    int count = taskDao.update(task);
     sqlSession.commit();
     return count;
   }
 
-  // 게시글 삭제 업무
+  // 삭제 업무
   public int delete(int no) throws Exception {
-    int count = memberDao.delete(no);
+    int count = taskDao.delete(no);
     sqlSession.commit();
     return count;
   }
 
 }
+
+
+
+
+
 
 
