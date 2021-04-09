@@ -48,6 +48,10 @@ import com.eomcs.pms.service.BoardService;
 import com.eomcs.pms.service.MemberService;
 import com.eomcs.pms.service.ProjectService;
 import com.eomcs.pms.service.TaskService;
+import com.eomcs.pms.service.impl.DefaultBoardService;
+import com.eomcs.pms.service.impl.DefaultMemberService;
+import com.eomcs.pms.service.impl.DefaultProjectService;
+import com.eomcs.pms.service.impl.DefaultTaskService;
 import com.eomcs.util.Prompt;
 
 public class ClientApp {
@@ -95,10 +99,10 @@ public class ClientApp {
     ProjectDao projectDao = new ProjectDaoImpl(sqlSession);
     TaskDao taskDao = new TaskDaoImpl(sqlSession);
 
-    BoardService boardService = new BoardService(sqlSession, boardDao);
-    MemberService memberService = new MemberService(sqlSession, memberDao);
-    ProjectService projectService = new ProjectService(sqlSession, projectDao, taskDao);
-    TaskService taskService = new TaskService(sqlSession, taskDao);
+    BoardService boardService = new DefaultBoardService(sqlSession, boardDao);
+    MemberService memberService = new DefaultMemberService(sqlSession, memberDao);
+    ProjectService projectService = new DefaultProjectService(sqlSession, projectDao, taskDao);
+    TaskService taskService = new DefaultTaskService(sqlSession, taskDao);
 
     // 사용자 명령을 처리하는 객체를 맵에 보관한다.
     HashMap<String,Command> commandMap = new HashMap<>();

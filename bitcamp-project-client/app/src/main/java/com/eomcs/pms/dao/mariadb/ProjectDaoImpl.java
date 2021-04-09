@@ -23,7 +23,7 @@ public class ProjectDaoImpl implements ProjectDao {
   @Override
   public List<Project> findByKeyword(String item, String keyword) throws Exception {
 
-    HashMap<String, Object> params = new HashMap<>();
+    HashMap<String,Object> params = new HashMap<>();
     params.put("item", item);
     params.put("keyword", keyword);
 
@@ -33,7 +33,7 @@ public class ProjectDaoImpl implements ProjectDao {
   @Override
   public List<Project> findByKeywords(String title, String owner, String member) throws Exception {
 
-    HashMap<String, Object> params = new HashMap<>();
+    HashMap<String,Object> params = new HashMap<>();
     params.put("title", title);
     params.put("owner", owner);
     params.put("member", member);
@@ -58,17 +58,15 @@ public class ProjectDaoImpl implements ProjectDao {
 
   @Override
   public int insertMember(int projectNo, int memberNo) throws Exception {
-    HashMap<String, Object> params = new HashMap<>();
+    HashMap<String,Object> params = new HashMap<>();
     params.put("projectNo", projectNo);
     params.put("memberNo", memberNo);
     return sqlSession.insert("ProjectMapper.insertMember", params);
-
-
   }
 
   @Override
   public int insertMembers(int projectNo, List<Member> members) throws Exception {
-    HashMap<String, Object> params = new HashMap<>();
+    HashMap<String,Object> params = new HashMap<>();
     params.put("projectNo", projectNo);
     params.put("members", members);
     return sqlSession.insert("ProjectMapper.insertMembers", params);
@@ -84,5 +82,15 @@ public class ProjectDaoImpl implements ProjectDao {
     return sqlSession.delete("ProjectMapper.deleteMembers", projectNo);
   }
 }
+
+
+
+
+
+
+
+
+
+
 
 
