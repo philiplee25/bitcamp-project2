@@ -43,7 +43,7 @@ public class ClientApp {
   int port;
 
   // 객체를 보관할 컨테이너 준비
-  Map<String, Object> objMap = new HashMap<>();
+  Map<String,Object> objMap = new HashMap<>();
 
   public static void main(String[] args) {
     ClientApp app = new ClientApp("localhost", 8888);
@@ -65,8 +65,8 @@ public class ClientApp {
   public void execute() throws Exception {
 
     // Mybatis 설정 파일을 읽을 입력 스트림 객체 준비
-    InputStream mybatisConfigStream =
-        Resources.getResourceAsStream("com/eomcs/pms/conf/mybatis-config.xml");
+    InputStream mybatisConfigStream = Resources.getResourceAsStream(
+        "com/eomcs/pms/conf/mybatis-config.xml");
 
     // SqlSessionFactory 객체 준비
     SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(mybatisConfigStream);
@@ -78,13 +78,13 @@ public class ClientApp {
     // DAO 구현체를 만들어주는 공장 객체를 준비한다.
     MybatisDaoFactory daoFactory = new MybatisDaoFactory(sqlSession);
 
-
-    // 핸들러가 사용할 DAO 객체 준비
+    // 서비스 객체가 사용할 DAO 객체 준비
     BoardDao boardDao = daoFactory.createDao(BoardDao.class);
     MemberDao memberDao = daoFactory.createDao(MemberDao.class);
     ProjectDao projectDao = daoFactory.createDao(ProjectDao.class);
     TaskDao taskDao = daoFactory.createDao(TaskDao.class);
 
+    // Command 구현체가 사용할 의존 객체 준비
     BoardService boardService = new DefaultBoardService(sqlSession, boardDao);
     MemberService memberService = new DefaultMemberService(sqlSession, memberDao);
     ProjectService projectService = new DefaultProjectService(sqlSession, projectDao, taskDao);
@@ -92,17 +92,16 @@ public class ClientApp {
 
     MemberValidator memberValidator = new MemberValidator(memberService);
 
+    // Command 구현체가 사용할 의존 객체를 보관
     objMap.put("boardService", boardService);
     objMap.put("memberService", memberService);
     objMap.put("projectService", projectService);
     objMap.put("taskService", taskService);
     objMap.put("memberValidator", memberValidator);
 
+    // Command 구현체를 자동 생성하여 맵에 등록
     registerCommands();
 
-
-
-    // 사용자 명령을 처리하는 객체를 맵에 보관한다.
     try {
 
       while (true) {
@@ -161,7 +160,7 @@ public class ClientApp {
 
     Set<Object> keys = commandProps.keySet();
     for (Object key : keys) {
-      // commands.properties 파일에서 클래스 이름을 한 개 가져온다
+      // commands.properties 파일에서 클래스 이름을 한 개 가져온다.
       String className = (String) commandProps.get(key);
 
       // 클래스 이름을 사용하여 .class 파일을 로딩한다.
@@ -171,18 +170,20 @@ public class ClientApp {
       Object command = createCommand(clazz);
 
       // 생성된 객체를 객체 맵에 보관한다.
-      objMap.put((String) key, command);
+      objMap.put((String)key, command);
+
+      System.out.println("인스턴스 생성 ===> " + command.getClass().getName());
     }
   }
 
   private Object createCommand(Class<?> clazz) throws Exception {
-    // 생성자 정보를 알아낸다. 첫번째 생성자만 꺼낸다.
+    // 생성자 정보를 알아낸다. 첫 번째 생성자만 꺼낸다.
     Constructor<?> constructor = clazz.getConstructors()[0];
 
     // 생성자의 파라미터 정보를 알아낸다.
     Parameter[] params = constructor.getParameters();
 
-    // 생성자를 호출할 때 넘겨줄 값을 담을 배열을 준비한다.
+    // 생성자를 호출할 때 넘겨 줄 값을 담을 컬렉션을 준비한다.
     ArrayList<Object> args = new ArrayList<>();
 
     // 각 파라미터의 타입을 알아낸 후 objMap에서 찾는다.
