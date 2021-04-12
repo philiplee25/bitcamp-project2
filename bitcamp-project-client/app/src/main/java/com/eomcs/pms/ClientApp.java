@@ -1,5 +1,6 @@
 package com.eomcs.pms;
 
+import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Parameter;
@@ -10,8 +11,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -31,6 +30,7 @@ import com.eomcs.pms.service.impl.DefaultBoardService;
 import com.eomcs.pms.service.impl.DefaultMemberService;
 import com.eomcs.pms.service.impl.DefaultProjectService;
 import com.eomcs.pms.service.impl.DefaultTaskService;
+import com.eomcs.stereotype.Component;
 import com.eomcs.util.Prompt;
 
 public class ClientApp {
@@ -155,24 +155,87 @@ public class ClientApp {
   }
 
   private void registerCommands() throws Exception {
-    Properties commandProps = new Properties();
-    commandProps.load(Resources.getResourceAsStream("com/eomcs/pms/conf/commands.properties"));
 
-    Set<Object> keys = commandProps.keySet();
-    for (Object key : keys) {
-      // commands.properties 파일에서 클래스 이름을 한 개 가져온다.
-      String className = (String) commandProps.get(key);
+    // 패키지에 소속된 모든 클래스의 타입 정보를 알아낸다.
+    ArrayList<Class<?>> components = new ArrayList<>();
+    loadComponents("com.eomcs.pms.handler", components);
 
-      // 클래스 이름을 사용하여 .class 파일을 로딩한다.
-      Class<?> clazz = Class.forName(className);
+    for (Class<?> clazz : components) {
+
+      // 클래스 목록에서 클래스 정보를 한 개 꺼내, Command 구현체인지 검사한다.
+      if (!isCommand(clazz)) {
+        continue;
+      }
 
       // 클래스 정보를 이용하여 객체를 생성한다.
       Object command = createCommand(clazz);
 
+      // 클래스 정보에서 @Component 애노테이션 정보를 가져온다.
+      Component compAnno = clazz.getAnnotation(Component.class);
+
+      // 애노테이션 정보에서 맵에 객체를 저장할 때 키로 사용할 문자열 꺼낸다.
+      String key = null;
+      if (compAnno.value().length() == 0){
+        key = clazz.getName(); // 키로 사용할 문자열이 없으면 클래스 이름을 키로 사용한다.
+      } else {
+        key = compAnno.value();
+      }
+
       // 생성된 객체를 객체 맵에 보관한다.
-      objMap.put((String)key, command);
+      objMap.put(key, command);
 
       System.out.println("인스턴스 생성 ===> " + command.getClass().getName());
+    }
+  }
+
+  private boolean isCommand(Class<?> type) {
+    // 클래스가 아니라 인터페이스라면 무시한다.
+    if (type.isInterface()) {
+      return false;
+    }
+
+    // 클래스의 인터페이스 목록을 꺼낸다.
+    Class<?>[] interfaces = type.getInterfaces();
+
+    // 클래스가 구현한 인터페이스 중에서 Command 인터페이스가 있는지 조사한다.
+    for (Class<?> i : interfaces) {
+      if (i == Command.class) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private void loadComponents(String packageName, ArrayList<Class<?>> components) throws Exception {
+
+    // 패키지의 '파일 시스템 경로'를 알아낸다.
+    File dir = Resources.getResourceAsFile(packageName.replaceAll("\\.", "/"));
+
+    if (!dir.isDirectory()) {
+      throw new Exception("유효한 패키지가 아닙니다.");
+    }
+
+    File[] files = dir.listFiles(f -> {
+      if (f.isDirectory() || f.getName().endsWith(".class"))
+        return true;
+      return false;
+    });
+
+    for (File file : files) {
+      if (file.isDirectory()) {
+        loadComponents(packageName + "." + file.getName(), components);
+      } else {
+        String className = packageName + "." + file.getName().replace(".class", "");
+        try {
+          Class<?> clazz = Class.forName(className);
+          if (clazz.getAnnotation(Component.class) != null) {
+            components.add(clazz);
+          }
+        } catch (Exception e) {
+          System.out.println("클래스 로딩 오류: " + className);
+        }
+      }
     }
   }
 
