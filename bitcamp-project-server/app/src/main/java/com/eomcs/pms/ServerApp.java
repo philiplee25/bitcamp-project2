@@ -54,27 +54,35 @@ public class ServerApp {
     threadPool.shutdown();
     System.out.println("서버 종료 중...");
 
+    // 만약 현재 실행 중인 스레드를 강제로 종료시키고 싶다면 
+    // 다음 코드를 참고하라!
     try {
       if (!threadPool.awaitTermination(10, TimeUnit.SECONDS)) {
-        System.out.println("아직 실행중인 스레드가 있습니다.");
+        System.out.println("아직 실행 중인 스레드가 있습니다.");
 
-        threadPool.shutdown();
+        // 종료를 재시도 한다.
+        // => 대기 중인 작업도 취소한다.
+        threadPool.shutdownNow();
 
         while (!threadPool.awaitTermination(10, TimeUnit.SECONDS)) {
-          System.out.println("아직 실행중인 스레드가 있습니다.");
-        }
+          System.out.println("아직 실행 중인 스레드가 있습니다.");
+        } 
+
         System.out.println("모든 스레드를 종료했습니다.");
       }
     } catch (Exception e) {
       System.out.println("스레드 강제 종료 중에 오류 발생!");
     }
+
+    System.out.println("서버 종료!");
   }
 
   public void processRequest(Socket socket) {
-    try (Socket clientSocket = socket;
-        BufferedReader in =
-            new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        PrintWriter out = new PrintWriter(clientSocket.getOutputStream());) {
+    try (
+        Socket clientSocket = socket;
+        BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        PrintWriter out = new PrintWriter(clientSocket.getOutputStream());
+        ) {
 
       while (true) {
         // 클라이언트가 보낸 요청을 읽는다.
@@ -86,7 +94,7 @@ public class ServerApp {
           out.println();
           out.flush();
           terminate();
-          return;
+          return; 
         }
 
         if (requestLine.equalsIgnoreCase("exit") || requestLine.equalsIgnoreCase("quit")) {
@@ -113,7 +121,7 @@ public class ServerApp {
 
         // 클라이언트에게 응답한다.
         out.println("OK");
-        out.printf("====> %s\n", requestLine);
+        out.printf("====> %s\n", requestLine);   
         out.println();
         out.flush();
       }
@@ -130,12 +138,11 @@ public class ServerApp {
     isStop = true;
 
     // 그리고 서버가 즉시 종료할 수 있도록 임의의 접속을 수행한다.
-    // => 스스로 클라이언트가 되어 ServerSocket 에 접속하면
-    // accept()에서 리턴하기 때문에 isStop 변수의 상태에 따라 반복문을 멈출 것이다.
+    // => 스스로 클라이언트가 되어 ServerSocket 에 접속하면 
+    //    accept()에서 리턴하기 때문에 isStop 변수의 상태에 따라 반복문을 멈출 것이다.
     try (Socket socket = new Socket("localhost", 8888)) {
       // 서버를 종료시키기 위해 임의로 접속하는 것이기 때문에 특별히 추가로 해야 할 일이 없다.
-    } catch (Exception e) {
-    }
+    } catch (Exception e) {}
   }
 
 }
