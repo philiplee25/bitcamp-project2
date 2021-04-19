@@ -12,7 +12,10 @@ public class ClientApp {
   int port;
 
   public static void main(String[] args) {
-    ClientApp app = new ClientApp("localhost", 8888);
+    String serverAddress = Prompt.inputString("서버주소?");
+    int port = Prompt.inputInt("서버 포트?");
+
+    ClientApp app = new ClientApp(serverAddress, port);
 
     try {
       app.execute();
@@ -36,8 +39,7 @@ public class ClientApp {
 
         // 2) 데이터 입출력 스트림 객체를 준비
         PrintWriter out = new PrintWriter(socket.getOutputStream());
-        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        ) {
+        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));) {
 
       while (true) {
         String command = com.eomcs.util.Prompt.inputString("명령> ");
@@ -60,9 +62,8 @@ public class ClientApp {
         }
         System.out.println(); // 이전 명령의 실행을 구분하기 위해 빈 줄 출력
 
-        if (command.equalsIgnoreCase("quit") || 
-            command.equalsIgnoreCase("exit") ||
-            command.equalsIgnoreCase("serverstop")) {
+        if (command.equalsIgnoreCase("quit") || command.equalsIgnoreCase("exit")
+            || command.equalsIgnoreCase("serverstop")) {
           System.out.println("안녕!");
           break;
         }
