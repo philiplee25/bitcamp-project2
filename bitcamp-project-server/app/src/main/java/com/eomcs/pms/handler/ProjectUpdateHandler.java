@@ -28,11 +28,6 @@ public class ProjectUpdateHandler implements Command {
 
     out.println("[프로젝트 변경]");
 
-    Member loginUser = (Member) request.getSession().getAttribute("loginUser");
-    if (loginUser == null) {
-      out.println("로그인 하지 않았습니다!");
-      return;
-    }
 
     int no = prompt.inputInt("번호? ");
 
@@ -43,6 +38,7 @@ public class ProjectUpdateHandler implements Command {
       return;
     }
 
+    Member loginUser = (Member) request.getSession().getAttribute("loginUser");
     if (oldProject.getOwner().getNo() != loginUser.getNo()) {
       out.println("변경 권한이 없습니다!");
       return;

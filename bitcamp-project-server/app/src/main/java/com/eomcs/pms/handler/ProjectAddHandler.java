@@ -27,18 +27,15 @@ public class ProjectAddHandler implements Command {
 
     out.println("[프로젝트 등록]");
 
-    Member loginUser = (Member) request.getSession().getAttribute("loginUser");
-    if (loginUser == null) {
-      out.println("로그인 하지 않았습니다!");
-      return;
-    }
-
     Project p = new Project();
     p.setTitle(prompt.inputString("프로젝트명? "));
     p.setContent(prompt.inputString("내용? "));
     p.setStartDate(prompt.inputDate("시작일? "));
     p.setEndDate(prompt.inputDate("종료일? "));
+
+    Member loginUser = (Member) request.getSession().getAttribute("loginUser");
     p.setOwner(loginUser);
+
     p.setMembers(memberValidator.inputMembers("팀원?(완료: 빈 문자열) ", request, response));
 
     projectService.add(p);

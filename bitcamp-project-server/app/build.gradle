@@ -1,7 +1,9 @@
 plugins {
-    id 'application'
     id 'java'
     id 'eclipse'
+    
+    // 웹 애플리케이션 패키지 파일을 생성할 때 사용할 플러그인 등록
+    id 'war'
 }
 
 // 자바 소스를 컴파일 할 때 적용할 옵션
@@ -21,12 +23,11 @@ repositories {
 }
 
 dependencies {
+    // 웹 애플리케이션을 제작할 때 사용하는 Servlet/JSP 라이브러리
+    implementation 'javax.servlet:javax.servlet-api:4.0.1'
+
     testImplementation 'junit:junit:4.13'
     implementation 'com.google.guava:guava:29.0-jre'
     implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.2'
     implementation 'org.mybatis:mybatis:3.5.6'
-}
-
-application {
-    mainClass = 'com.eomcs.pms.ServerApp'
 }

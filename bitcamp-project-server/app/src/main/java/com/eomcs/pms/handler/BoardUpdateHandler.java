@@ -25,12 +25,6 @@ public class BoardUpdateHandler implements Command {
 
     out.println("[게시글 변경]");
 
-    Member loginUser = (Member) request.getSession().getAttribute("loginUser");
-    if (loginUser == null) {
-      out.println("로그인 하지 않았습니다!");
-      return;
-    }
-
     int no = prompt.inputInt("번호? ");
 
     Board oldBoard = boardService.get(no);
@@ -39,6 +33,7 @@ public class BoardUpdateHandler implements Command {
       return;
     }
 
+    Member loginUser = (Member) request.getSession().getAttribute("loginUser");
     if (oldBoard.getWriter().getNo() != loginUser.getNo()) {
       out.println("변경 권한이 없습니다!");
       return;

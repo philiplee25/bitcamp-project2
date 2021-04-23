@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Parameter;
 import java.net.InetSocketAddress;
@@ -13,8 +14,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -39,9 +40,11 @@ import com.eomcs.pms.service.impl.DefaultMemberService;
 import com.eomcs.pms.service.impl.DefaultProjectService;
 import com.eomcs.pms.service.impl.DefaultTaskService;
 import com.eomcs.stereotype.Component;
+import com.eomcs.util.CommandFilter;
 import com.eomcs.util.CommandRequest;
 import com.eomcs.util.CommandResponse;
-import com.eomcs.util.Prompt;
+import com.eomcs.util.Filter;
+import com.eomcs.util.FilterList;
 import com.eomcs.util.Session;
 
 public class ServerApp {
@@ -53,6 +56,9 @@ public class ServerApp {
 
   // 객체를 보관할 컨테이너 준비
   Map<String,Object> objMap = new HashMap<>();
+
+  // 필터를 보관할 컬렉션 준비
+  List<Filter> filters = new ArrayList<>();
 
   // 세션을 보관할 저장소
   Map<String,Session> sessionMap = new HashMap<>();
@@ -123,7 +129,7 @@ public class ServerApp {
     objMap.put("memberValidator", memberValidator);
 
     // 5) Command 구현체를 자동 생성하여 맵에 등록
-    registerCommands();
+    registerCommandAndFilter();
 
     // 클라이언트 연결을 기다리는 서버 소켓 생성
     try (ServerSocket serverSocket = new ServerSocket(this.port)) {
@@ -180,102 +186,83 @@ public class ServerApp {
         PrintWriter out = new PrintWriter(clientSocket.getOutputStream());
         ) {
 
-      // 클라이언트가 보낸 명령을 Command 구현체에게 전달하기 쉽도록 객체에 담는다.
-      InetSocketAddress remoteAddr = (InetSocketAddress) clientSocket.getRemoteSocketAddress();
-
-      // 클라이언트로부터 값을 입력 받을 때 사용할 객체를 준비한다.
-      Prompt prompt = new Prompt(in, out);
-
-      // 클라이언트가 보낸 요청을 읽는다.
+      // HTTP(HyperText Transfer Protocol)에 따라 클라이언트 요청 정보를 읽는다.
+      // => 클라이언트가 보낸 요청을 읽는다.
       String requestLine = in.readLine();
 
-      // 클라이언트를 구분할 때 사용할 세션 아이디
-      String sessionId = null;
-
-      // 클라이언트가 사용할 저장소
-      Session session = null;
-
-      // 새션 객체를 새로 만들었는지 여부 
-      boolean isNewSession = false;
-
-      // 클라이언트가 보낸 요청 헤더를 읽는다.
+      // => 클라이언트가 보낸 요청 헤더를 읽는다.
       while (true) {
         String line = in.readLine();
         if (line.length() == 0) {
           break;
         }
-        // 만약 읽은 헤더가 sessionid 라면,
-        if (line.startsWith("SESSION_ID:")) {
-          sessionId = line.substring(11);
-
-          // 세션 아이디에 해당하는 세션 객체를 찾는다.
-          session = sessionMap.get(sessionId);
-        }
       }
 
-      // 클라이언트가 세션 아이디를 보내오지 않았거나,
-      // 보내오긴 했지만 무효한 세션 아이디일 경우
-      // 새로 세션 객체를 만든다.
-      if (session == null) {
-        session = new Session();
-        sessionId = UUID.randomUUID().toString();
-        isNewSession = true;
-        // 세션 객체를 새로 만들었으면, 
-        // 다음에 같은 클라이언트가 또 사용할 수 있도록 세션 보관소에 저장해 둔다.
-        sessionMap.put(sessionId, session);
-      }
-
-      // 클라이언트 요청에 대해 기록(log)을 남긴다.
-      System.out.printf("[%s:%d] %s\n", 
-          remoteAddr.getHostString(), remoteAddr.getPort(), requestLine);
-
-
-      if (requestLine.equalsIgnoreCase("serverstop")) {
-        out.println("Server stopped!");
-        out.println();
-        out.flush();
-        terminate();
-        return; 
-      }
+      // HTTP 프로토콜의 request-line 에서 Command Path를 추출한다.
+      // request-line 의 예: 
+      //    GET /board/list HTTP/1.1 (CRLF)
+      //
+      String commandPath = requestLine.split(" ")[1]; // 예) /board/list
 
       // 클라이언트의 요청을 처리할 Command 구현체를 찾는다.
-      Command command = (Command) objMap.get(requestLine);
+      Command command = (Command) objMap.get(commandPath);
       if (command == null) {
-        out.println("해당 명령을 처리할 수 없습니다!");
-        out.println();
-        out.flush();
+        sendResponseMessage(out, "404 Not Found", "요청 명령을 처리할 수 없습니다!");
         return;
       }
 
+      // 클라이언트가 보낸 명령을 Command 구현체에게 전달하기 쉽도록 객체에 담는다.
+      // => 클라이언트의 인터넷 주소 정보를 알아낸다.
+      InetSocketAddress remoteAddr = (InetSocketAddress) clientSocket.getRemoteSocketAddress();
+
       CommandRequest request = new CommandRequest(
-          requestLine, 
+          commandPath, 
           remoteAddr.getHostString(),
           remoteAddr.getPort(), 
-          prompt,
-          session);
+          null,  // HTTP 프로토콜에서는 요청과 응답 중간에 클라이언트와 데이터를 주고 받을 수 없다.
+          null   // HTTP 프로토콜에서는 세션을 다루는 방식이 다르다. 
+          );
 
-      CommandResponse response = new CommandResponse(out);
+      // => Command 구현체가 클라이언트에게 바로 응답할 수 없다.
+      // => 왜?
+      //    HTTP 프로토콜에 따라 상태 코드와 응답 헤더를 먼저 출력해야 한다.
+      //    따라서 진짜 출력 스트림을 주지 말고, 
+      //    Command 구현체가 출력할 문자열을 담을 임시 출력 스트림겸 저장소를 넘겨준다.
+      // 
+      StringWriter messageWriter = new StringWriter();
 
-      // 클라이언트가 요청한 작업을 처리한 후 응답 데이터를 보내기 전에 
-      // 먼저 클라이언트에게 응답 헤더를 보낸다.
-      out.println("OK");
-      if (isNewSession) {
-        out.printf("SESSION_ID:%s\n", sessionId);
+      // => Command 구현체가 사용하는 PrintWriter 이다.
+      //    따라서 StringWriter 를 사용할 수 없다.
+      // => 이를 해결하기 위해 StringWriter에 PrintWriter라는 데코레이터를 붙여서 전달한다.
+      CommandResponse response = new CommandResponse(new PrintWriter(messageWriter));
+
+      // 필터 목록을 관리할 객체를 준비한다.
+      FilterList filterList = new FilterList();
+
+      // Command 구현체를 실행할 필터를 준비한다.
+      CommandFilter commandFilter = new CommandFilter(command);
+
+      // 필터를 FilterList에 보관한다.
+      filterList.add(commandFilter);
+
+      // 추가로 삽입할 필터가 있다면 다음과 같이 등록한다.
+      for (Filter filter : filters) {
+        filterList.add(filter);
       }
-      out.println();
 
       // Command 구현체를 실행한다.
       try {
-        command.service(request, response);
-        out.println();
-        out.flush();
+        // 직접 Command 구현체를 호출하는 대신에 필터 체인을 통해 실행한다.
+        // => 필터 목록에서 맨 앞의 필터 체인을 꺼내서 실행한다.
+        filterList.getHeaderChain().doFilter(request, response);
 
       } catch (Exception e) {
         out.println("서버 오류 발생!");
-        out.println();
-        out.flush();
-        throw e;
       }
+
+      // 필터와 Command 구현체를 실행한 다음, StringWriter에 출력된 내용을 웹브라우저에게 보낸다.
+      // => 예외가 발생해도 마찬가지이다.
+      sendResponseMessage(out, "200 OK", messageWriter.toString());
 
     } catch (Exception e) {
       System.out.println("클라이언트의 요청을 처리하는 중에 오류 발생!");
@@ -283,54 +270,75 @@ public class ServerApp {
     }
   }
 
-  // 서버를 최종적으로 종료하는 일을 한다.
-  private void terminate() {
-    // 서버 상태를 종료로 설정한다.
-    isStop = true;
-
-    // 그리고 서버가 즉시 종료할 수 있도록 임의의 접속을 수행한다.
-    // => 스스로 클라이언트가 되어 ServerSocket 에 접속하면 
-    //    accept()에서 리턴하기 때문에 isStop 변수의 상태에 따라 반복문을 멈출 것이다.
-    try (Socket socket = new Socket("localhost", 8888)) {
-      // 서버를 종료시키기 위해 임의로 접속하는 것이기 때문에 특별히 추가로 해야 할 일이 없다.
-    } catch (Exception e) {}
+  private void sendResponseMessage(PrintWriter out, String status, String message) throws Exception {
+    // HTTP 응답 프로토콜에 따라 웹 브라우저에게 데이터를 보낸다.
+    // HTTP 응답 프로토콜:
+    //     응답 상태 (CRLF)
+    //     응답헤더 (CRLF)
+    //     ...
+    //     CRLF
+    //     메시지
+    // 예)
+    //     HTTP/1.1 200 OK (CRLF)
+    //     Content-Type: text/plain;charset=utf-8
+    //     CRLF
+    //     Hello!!!
+    // 
+    out.println("HTTP/1.1 " + status);
+    out.println("Content-Type: text/plain;charset=utf-8");
+    out.println();
+    out.println(message);
+    out.flush();
   }
 
-  private void registerCommands() throws Exception {
+  private void registerCommandAndFilter() throws Exception {
 
     // 패키지에 소속된 모든 클래스의 타입 정보를 알아낸다.
     ArrayList<Class<?>> components = new ArrayList<>();
-    loadComponents("com.eomcs.pms.handler", components);
+    loadComponents("com.eomcs.pms", components);
 
+    // 클래스 목록에서 클래스 정보를 한 개 꺼낸다.
     for (Class<?> clazz : components) {
-
-      // 클래스 목록에서 클래스 정보를 한 개 꺼내, Command 구현체인지 검사한다.
-      if (!isCommand(clazz)) {
-        continue;
+      if (isType(clazz, Command.class)) { // Command 구현체라면, 
+        prepareCommand(clazz);
+      } else if (isType(clazz, Filter.class)) { // Filter 구현체라면,
+        prepareFilter(clazz);
       }
-
-      // 클래스 정보를 이용하여 객체를 생성한다.
-      Object command = createCommand(clazz);
-
-      // 클래스 정보에서 @Component 애노테이션 정보를 가져온다.
-      Component compAnno = clazz.getAnnotation(Component.class);
-
-      // 애노테이션 정보에서 맵에 객체를 저장할 때 키로 사용할 문자열 꺼낸다.
-      String key = null;
-      if (compAnno.value().length() == 0){
-        key = clazz.getName(); // 키로 사용할 문자열이 없으면 클래스 이름을 키로 사용한다.
-      } else {
-        key = compAnno.value();
-      }
-
-      // 생성된 객체를 객체 맵에 보관한다.
-      objMap.put(key, command);
-
-      System.out.println("인스턴스 생성 ===> " + command.getClass().getName());
     }
   }
 
-  private boolean isCommand(Class<?> type) {
+  private void prepareCommand(Class<?> clazz) throws Exception {
+    // 클래스 정보를 이용하여 객체를 생성한다.
+    Object command = createObject(clazz);
+
+    // 클래스 정보에서 @Component 애노테이션 정보를 가져온다.
+    Component compAnno = clazz.getAnnotation(Component.class);
+
+    // 애노테이션 정보에서 맵에 객체를 저장할 때 키로 사용할 문자열 꺼낸다.
+    String key = null;
+    if (compAnno.value().length() == 0){
+      key = clazz.getName(); // 키로 사용할 문자열이 없으면 클래스 이름을 키로 사용한다.
+    } else {
+      key = compAnno.value();
+    }
+
+    // 생성된 객체를 객체 맵에 보관한다.
+    objMap.put(key, command);
+
+    System.out.println("Command 생성 ===> " + command.getClass().getName());
+  }
+
+  private void prepareFilter(Class<?> clazz) throws Exception {
+    // 클래스 정보를 이용하여 객체를 생성한다.
+    Object filter = createObject(clazz);
+
+    // 생성된 Filter 객체를 객체 목록에 보관한다.
+    filters.add((Filter)filter);
+
+    System.out.println("Filter 생성 : " + clazz.getName());
+  }
+
+  private boolean isType(Class<?> type, Class<?> target) {
     // 클래스가 아니라 인터페이스라면 무시한다.
     if (type.isInterface()) {
       return false;
@@ -339,9 +347,9 @@ public class ServerApp {
     // 클래스의 인터페이스 목록을 꺼낸다.
     Class<?>[] interfaces = type.getInterfaces();
 
-    // 클래스가 구현한 인터페이스 중에서 Command 인터페이스가 있는지 조사한다.
+    // 클래스가 구현한 인터페이스 중에서 target 인터페이스가 있는지 조사한다.
     for (Class<?> i : interfaces) {
-      if (i == Command.class) {
+      if (i == target) {
         return true;
       }
     }
@@ -381,7 +389,7 @@ public class ServerApp {
     }
   }
 
-  private Object createCommand(Class<?> clazz) throws Exception {
+  private Object createObject(Class<?> clazz) throws Exception {
     // 생성자 정보를 알아낸다. 첫 번째 생성자만 꺼낸다.
     Constructor<?> constructor = clazz.getConstructors()[0];
 

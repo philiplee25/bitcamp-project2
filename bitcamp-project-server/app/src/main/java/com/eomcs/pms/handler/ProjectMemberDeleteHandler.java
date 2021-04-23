@@ -25,12 +25,6 @@ public class ProjectMemberDeleteHandler implements Command {
 
     out.println("[프로젝트 멤버 삭제]");
 
-    Member loginUser = (Member) request.getSession().getAttribute("loginUser");
-    if (loginUser == null) {
-      out.println("로그인 하지 않았습니다!");
-      return;
-    }
-
     int no = prompt.inputInt("프로젝트 번호? ");
 
     Project project = projectService.get(no);
@@ -40,6 +34,7 @@ public class ProjectMemberDeleteHandler implements Command {
       return;
     }
 
+    Member loginUser = (Member) request.getSession().getAttribute("loginUser");
     if (project.getOwner().getNo() != loginUser.getNo()) {
       out.println("삭제 권한이 없습니다!");
       return;
