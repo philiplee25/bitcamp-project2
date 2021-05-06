@@ -17,13 +17,22 @@ import com.eomcs.pms.service.BoardService;
 public class BoardSearchHandler extends HttpServlet {
 
   @Override
-  protected void service(HttpServletRequest request, HttpServletResponse response)
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    BoardService boardService = (BoardService) request.getServletContext().getAttribute("boardService");
+    BoardService boardService =
+        (BoardService) request.getServletContext().getAttribute("boardService");
 
     response.setContentType("text/plain;charset=UTF-8");
     PrintWriter out = response.getWriter();
+
+    out.println("<!DOCTYPE html>");
+    out.println("<html>");
+    out.println("<head>");
+    out.println("<title>게시글 검색</title>");
+    out.println("</head>");
+    out.println("<body>");
+    out.println("<h1>게시글 검색 결과</h1>");
 
     try {
       String keyword = request.getParameter("keyword");
@@ -41,12 +50,8 @@ public class BoardSearchHandler extends HttpServlet {
       }
 
       for (Board b : list) {
-        out.printf("%d, %s, %s, %s, %d\n", 
-            b.getNo(), 
-            b.getTitle(), 
-            b.getWriter().getName(),
-            b.getRegisteredDate(),
-            b.getViewCount());
+        out.printf("%d, %s, %s, %s, %d\n", b.getNo(), b.getTitle(), b.getWriter().getName(),
+            b.getRegisteredDate(), b.getViewCount());
       }
 
     } catch (Exception e) {
@@ -57,9 +62,5 @@ public class BoardSearchHandler extends HttpServlet {
     }
   }
 }
-
-
-
-
 
 
