@@ -12,16 +12,15 @@ import com.eomcs.pms.domain.Member;
 import com.eomcs.pms.service.MemberService;
 
 @SuppressWarnings("serial")
-@WebServlet("/member/list")
+@WebServlet("/member/list") 
 public class MemberListHandler extends HttpServlet {
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    // 클라이언트가 /board/list 를 요청하면 톰캣 서버가 이 메서드를 호출한다.
+    // 클라이언트가 /board/list 를 요청하면 톰캣 서버가 이 메서드를 호출한다. 
 
-    MemberService memberService =
-        (MemberService) request.getServletContext().getAttribute("memberService");
+    MemberService memberService = (MemberService) request.getServletContext().getAttribute("memberService");
 
     response.setContentType("text/html;charset=UTF-8");
     PrintWriter out = response.getWriter();
@@ -48,18 +47,24 @@ public class MemberListHandler extends HttpServlet {
       out.println("<tbody>");
 
       for (Member m : list) {
-        out.printf("<tr>" + " <td>%d</td>" + " <td><img src='%s'></td>"
-            + " <td><a href='detail?no=%1$d'>%s</a></td>" + " <td>%s</td>" + " <td>%s</td> </tr>\n",
-            m.getNo(), m.getPhoto() != null ? "../upload/" + m.getPhoto() + "_30x30.jpg"
-                : "../images/person_30x30.jpg",
-            m.getName(), m.getEmail(), m.getTel());
+        out.printf("<tr>"
+            + " <td>%d</td>"
+            + " <td><img src='%s'></td>"
+            + " <td><a href='detail?no=%1$d'>%s</a></td>"
+            + " <td>%s</td>"
+            + " <td>%s</td> </tr>\n", 
+            m.getNo(), 
+            m.getPhoto() != null ? "../upload/" + m.getPhoto() + "_30x30.jpg" : "../images/person_30x30.jpg",
+                m.getName(), 
+                m.getEmail(),
+                m.getTel());
       }
       out.println("</tbody>");
       out.println("</table>");
 
       out.println("<form action='list' method='get'>");
       String keyword = request.getParameter("keyword");
-      out.printf("<input type='search' name='keyword' value='%s'> \n",
+      out.printf("<input type='search' name='keyword' value='%s'> \n", 
           keyword != null ? keyword : "");
       out.println("<button>검색</button>");
       out.println("</form>");
@@ -74,5 +79,9 @@ public class MemberListHandler extends HttpServlet {
     out.println("</html>");
   }
 }
+
+
+
+
 
 

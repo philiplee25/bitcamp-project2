@@ -18,8 +18,7 @@ public class MemberDetailHandler extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    MemberService memberService =
-        (MemberService) request.getServletContext().getAttribute("memberService");
+    MemberService memberService = (MemberService) request.getServletContext().getAttribute("memberService");
 
     response.setContentType("text/html;charset=UTF-8");
     PrintWriter out = response.getWriter();
@@ -47,36 +46,34 @@ public class MemberDetailHandler extends HttpServlet {
       out.println("<form action='update' method='post' enctype='multipart/form-data'>");
       out.println("<table border='1'>");
       out.println("<tbody>");
-      out.printf(
-          "<tr><th>번호</th>" + " <td><input type='text' name='no' value='%d' readonly></td></tr>\n",
-          m.getNo());
-      out.printf("<tr><th>이름</th>" + " <td><input name='name' type='text' value='%s'></td></tr>\n",
-          m.getName());
-      out.printf(
-          "<tr><th>이메일</th>" + " <td><input name='email' type='email' value='%s'></td></tr>\n",
-          m.getEmail());
+      out.printf("<tr><th>번호</th>"
+          + " <td><input type='text' name='no' value='%d' readonly></td></tr>\n", m.getNo());
+      out.printf("<tr><th>이름</th>"
+          + " <td><input name='name' type='text' value='%s'></td></tr>\n", m.getName());
+      out.printf("<tr><th>이메일</th>"
+          + " <td><input name='email' type='email' value='%s'></td></tr>\n", m.getEmail());
       out.println("<tr><th>암호</th> <td><input name='password' type='password'></td></tr>");
-      out.printf("<tr><th>전화</th>" + " <td><input name='tel' type='tel' value='%s'></td></tr>\n",
+      out.printf("<tr><th>전화</th>"
+          + " <td><input name='tel' type='tel' value='%s'></td></tr>\n", 
           m.getTel() != null ? m.getTel() : "");
       out.printf("<tr><th>가입일</th> <td>%s</td></tr>\n", m.getRegisteredDate());
-      out.printf(
-          "<tr><th>사진</th> <td>" + "<a href='%s'><img src='%s'></a><br>"
-              + "<input name='photo' type='file'></td></tr>\n",
+      out.printf("<tr><th>사진</th> <td>"
+          + "<a href='%s'><img src='%s'></a><br>"
+          + "<input name='photo' type='file'></td></tr>\n",
           m.getPhoto() != null ? "../upload/" + m.getPhoto() : "",
-          m.getPhoto() != null ? "../upload/" + m.getPhoto() + "_80x80.jpg"
-              : "../images/person_80x80.jpg");
+              m.getPhoto() != null ? "../upload/" + m.getPhoto() + "_80x80.jpg" : "../images/person_80x80.jpg");
       out.println("</tbody>");
 
       // 회원 관리를 관리자가 할 경우 모든 회원의 정보 변경 가능
-      // Member loginUser = (Member) request.getSession().getAttribute("loginUser");
-      // if (loginUser != null && m.getNo() == loginUser.getNo()) {
+      //Member loginUser = (Member) request.getSession().getAttribute("loginUser");
+      //if (loginUser != null && m.getNo() == loginUser.getNo()) {
       out.println("<tfoot>");
       out.println("<tr><td colspan='2'>");
-      out.println(
-          "<input type='submit' value='변경'> " + "<a href='delete?no=" + m.getNo() + "'>삭제</a> ");
+      out.println("<input type='submit' value='변경'> "
+          + "<a href='delete?no=" + m.getNo() + "'>삭제</a> ");
       out.println("</td></tr>");
       out.println("</tfoot>");
-      // }
+      //}
 
       out.println("</table>");
       out.println("</form>");
@@ -93,5 +90,9 @@ public class MemberDetailHandler extends HttpServlet {
     out.println("</html>");
   }
 }
+
+
+
+
 
 

@@ -18,10 +18,7 @@ public class ProjectDeleteHandler extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    ProjectService projectService =
-        (ProjectService) request.getServletContext().getAttribute("projectService");
-
-
+    ProjectService projectService = (ProjectService) request.getServletContext().getAttribute("projectService");
 
     try {
       int no = Integer.parseInt(request.getParameter("no"));
@@ -48,5 +45,11 @@ public class ProjectDeleteHandler extends HttpServlet {
     }
   }
 }
+
+
+
+
+
+
 
 

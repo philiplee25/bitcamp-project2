@@ -24,10 +24,8 @@ public class TaskAddHandler extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    ProjectService projectService =
-        (ProjectService) request.getServletContext().getAttribute("projectService");
-    MemberService memberService =
-        (MemberService) request.getServletContext().getAttribute("memberService");
+    ProjectService projectService = (ProjectService) request.getServletContext().getAttribute("projectService");
+    MemberService memberService = (MemberService) request.getServletContext().getAttribute("memberService");
 
     response.setContentType("text/html;charset=UTF-8");
     PrintWriter out = response.getWriter();
@@ -70,7 +68,9 @@ public class TaskAddHandler extends HttpServlet {
       out.println("</form>");
 
     } catch (Exception e) {
-      throw new ServletException(e);
+      request.setAttribute("exception", e);
+      request.getRequestDispatcher("/error").forward(request, response);
+      return;
     }
     out.println("</body>");
     out.println("</html>");

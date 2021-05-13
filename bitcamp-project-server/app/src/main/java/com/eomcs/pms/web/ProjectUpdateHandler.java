@@ -20,8 +20,7 @@ public class ProjectUpdateHandler extends HttpServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    ProjectService projectService =
-        (ProjectService) request.getServletContext().getAttribute("projectService");
+    ProjectService projectService = (ProjectService) request.getServletContext().getAttribute("projectService");
 
     try {
       int no = Integer.parseInt(request.getParameter("no"));
@@ -30,7 +29,7 @@ public class ProjectUpdateHandler extends HttpServlet {
 
       if (oldProject == null) {
         throw new Exception("해당 번호의 프로젝트가 없습니다.");
-      }
+      } 
 
       Member loginUser = (Member) request.getSession().getAttribute("loginUser");
       if (oldProject.getOwner().getNo() != loginUser.getNo()) {
@@ -70,5 +69,9 @@ public class ProjectUpdateHandler extends HttpServlet {
     }
   }
 }
+
+
+
+
 
 

@@ -18,8 +18,7 @@ public class MemberDeleteHandler extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    MemberService memberService =
-        (MemberService) request.getServletContext().getAttribute("memberService");
+    MemberService memberService = (MemberService) request.getServletContext().getAttribute("memberService");
 
     response.setContentType("text/html;charset=UTF-8");
     PrintWriter out = response.getWriter();
@@ -41,10 +40,10 @@ public class MemberDeleteHandler extends HttpServlet {
       }
 
       // 회원 관리를 관리자가 할 경우 모든 회원의 정보 변경 가능
-      // Member loginUser = (Member) request.getSession().getAttribute("loginUser");
-      // if (oldBoard.getWriter().getNo() != loginUser.getNo()) {
-      // throw new Exception("삭제 권한이 없습니다!");
-      // }
+      //      Member loginUser = (Member) request.getSession().getAttribute("loginUser");
+      //      if (oldBoard.getWriter().getNo() != loginUser.getNo()) {
+      //        throw new Exception("삭제 권한이 없습니다!");
+      //      }
 
       memberService.delete(no);
       out.println("<p>회원을 삭제하였습니다.</p>");
@@ -61,5 +60,9 @@ public class MemberDeleteHandler extends HttpServlet {
     out.println("</html>");
   }
 }
+
+
+
+
 
 

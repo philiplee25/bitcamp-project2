@@ -21,8 +21,7 @@ public class TaskListHandler extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    ProjectService projectService =
-        (ProjectService) request.getServletContext().getAttribute("projectService");
+    ProjectService projectService = (ProjectService) request.getServletContext().getAttribute("projectService");
     TaskService taskService = (TaskService) request.getServletContext().getAttribute("taskService");
 
     response.setContentType("text/html;charset=UTF-8");
@@ -39,7 +38,7 @@ public class TaskListHandler extends HttpServlet {
     out.println("<p><a href='add'>새 작업</a></p>");
 
     try {
-      String input = request.getParameter("projectNo");
+      String input  = request.getParameter("projectNo");
 
       int projectNo = 0;
       if (input != null) {
@@ -62,8 +61,10 @@ public class TaskListHandler extends HttpServlet {
       out.println("  <option value='0' selected>전체</option>");
       List<Project> projects = projectService.list();
       for (Project p : projects) {
-        out.printf("  <option value='%d' %s>%s</option>\n", p.getNo(),
-            projectNo == p.getNo() ? "selected" : "", p.getTitle());
+        out.printf("  <option value='%d' %s>%s</option>\n", 
+            p.getNo(), 
+            projectNo == p.getNo() ? "selected" : "",
+                p.getTitle());
       }
       out.println("</select>");
       out.println("<button>검색</button>");
@@ -87,10 +88,16 @@ public class TaskListHandler extends HttpServlet {
             out.printf("<tr><td colspan='5'>프로젝트: '%s'</td></tr>\n", t.getProjectTitle());
             projectNo = t.getProjectNo();
           }
-          out.printf(
-              "<tr>" + " <td>%d</td>" + " <td><a href='detail?no=%1$d'>%s</a></td>" + " <td>%s</td>"
-                  + " <td>%s</td>" + " <td>%s</td> </tr>\n",
-              t.getNo(), t.getContent(), t.getDeadline(), t.getOwner().getName(),
+          out.printf("<tr>"
+              + " <td>%d</td>"
+              + " <td><a href='detail?no=%1$d'>%s</a></td>"
+              + " <td>%s</td>"
+              + " <td>%s</td>"
+              + " <td>%s</td> </tr>\n", 
+              t.getNo(), 
+              t.getContent(), 
+              t.getDeadline(),
+              t.getOwner().getName(),
               Task.getStatusLabel(t.getStatus()));
         }
         out.println("</tbody>");

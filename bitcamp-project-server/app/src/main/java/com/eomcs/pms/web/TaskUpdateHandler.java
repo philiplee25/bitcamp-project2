@@ -27,14 +27,14 @@ public class TaskUpdateHandler extends HttpServlet {
       Task oldTask = taskService.get(no);
       if (oldTask == null) {
         throw new Exception("해당 번호의 회원이 없습니다.");
-      }
+      } 
 
       Task task = new Task();
       task.setNo(no);
       task.setProjectNo(Integer.parseInt(request.getParameter("projectNo")));
       task.setContent(request.getParameter("content"));
       task.setDeadline(Date.valueOf(request.getParameter("deadline")));
-      // 신규(0), 진행중(1), 완료(2)
+      //신규(0), 진행중(1), 완료(2)
       task.setStatus(Integer.parseInt(request.getParameter("status")));
 
       Member owner = new Member();

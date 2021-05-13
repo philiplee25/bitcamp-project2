@@ -28,13 +28,11 @@ public class MemberUpdateHandler extends HttpServlet {
   public void init() throws ServletException {
     this.uploadDir = this.getServletContext().getRealPath("/upload");
   }
-
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    MemberService memberService =
-        (MemberService) request.getServletContext().getAttribute("memberService");
+    MemberService memberService = (MemberService) request.getServletContext().getAttribute("memberService");
 
     response.setContentType("text/html;charset=UTF-8");
     PrintWriter out = response.getWriter();
@@ -53,13 +51,13 @@ public class MemberUpdateHandler extends HttpServlet {
       Member oldMember = memberService.get(no);
       if (oldMember == null) {
         throw new Exception("해당 번호의 회원이 없습니다.");
-      }
+      } 
 
       // 회원 관리를 관리자가 할 경우 모든 회원의 정보 변경 가능
-      // Member loginUser = (Member) request.getSession().getAttribute("loginUser");
-      // if (oldMember.getNo() != loginUser.getNo()) {
-      // throw new Exception("변경 권한이 없습니다!");
-      // }
+      //      Member loginUser = (Member) request.getSession().getAttribute("loginUser");
+      //      if (oldMember.getNo() != loginUser.getNo()) {
+      //        throw new Exception("변경 권한이 없습니다!");
+      //      }
 
       Member member = new Member();
       member.setNo(oldMember.getNo());
@@ -76,21 +74,27 @@ public class MemberUpdateHandler extends HttpServlet {
         member.setPhoto(filename);
 
         // 썸네일 이미지 생성
-        Thumbnails.of(this.uploadDir + "/" + filename).size(30, 30).outputFormat("jpg")
-            .crop(Positions.CENTER).toFiles(new Rename() {
-              @Override
-              public String apply(String name, ThumbnailParameter param) {
-                return name + "_30x30";
-              }
-            });
+        Thumbnails.of(this.uploadDir + "/" + filename)
+        .size(30, 30)
+        .outputFormat("jpg")
+        .crop(Positions.CENTER)
+        .toFiles(new Rename() {
+          @Override
+          public String apply(String name, ThumbnailParameter param) {
+            return name + "_30x30";
+          }
+        });
 
-        Thumbnails.of(this.uploadDir + "/" + filename).size(80, 80).outputFormat("jpg")
-            .crop(Positions.CENTER).toFiles(new Rename() {
-              @Override
-              public String apply(String name, ThumbnailParameter param) {
-                return name + "_80x80";
-              }
-            });
+        Thumbnails.of(this.uploadDir + "/" + filename)
+        .size(80, 80)
+        .outputFormat("jpg")
+        .crop(Positions.CENTER)
+        .toFiles(new Rename() {
+          @Override
+          public String apply(String name, ThumbnailParameter param) {
+            return name + "_80x80";
+          }
+        });
       }
 
       memberService.update(member);
@@ -108,5 +112,9 @@ public class MemberUpdateHandler extends HttpServlet {
     out.println("</html>");
   }
 }
+
+
+
+
 
 

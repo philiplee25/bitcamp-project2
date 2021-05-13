@@ -22,8 +22,7 @@ public class TaskDetailHandler extends HttpServlet {
       throws ServletException, IOException {
 
     TaskService taskService = (TaskService) request.getServletContext().getAttribute("taskService");
-    MemberService memberService =
-        (MemberService) request.getServletContext().getAttribute("memberService");
+    MemberService memberService = (MemberService) request.getServletContext().getAttribute("memberService");
 
     response.setContentType("text/html;charset=UTF-8");
     PrintWriter out = response.getWriter();
@@ -53,15 +52,12 @@ public class TaskDetailHandler extends HttpServlet {
       out.println("<table border='1'>");
       out.println("<tbody>");
       out.printf("<tr><th>프로젝트</th> <td>%s</td></tr>\n", task.getProjectTitle());
-      out.printf(
-          "<tr><th>번호</th>" + " <td><input name='no' type='text' value='%d' readonly></td></tr>\n",
-          task.getNo());
-      out.printf(
-          "<tr><th>작업</th>" + " <td><input name='content' type='text' value='%s'></td></tr>\n",
-          task.getContent());
-      out.printf(
-          "<tr><th>마감일</th>" + " <td><input name='deadline' type='date' value='%s'></td></tr>\n",
-          task.getDeadline());
+      out.printf("<tr><th>번호</th>"
+          + " <td><input name='no' type='text' value='%d' readonly></td></tr>\n", task.getNo());
+      out.printf("<tr><th>작업</th>"
+          + " <td><input name='content' type='text' value='%s'></td></tr>\n", task.getContent());
+      out.printf("<tr><th>마감일</th>"
+          + " <td><input name='deadline' type='date' value='%s'></td></tr>\n", task.getDeadline());
 
       out.println("<tr><th>상태</th> <td>");
       out.printf("<input type='radio' name='status' value='0' %s>신규 \n",
@@ -74,8 +70,10 @@ public class TaskDetailHandler extends HttpServlet {
       out.println("<tr><th>담당자</th> <td><select name='owner'>");
       List<Member> members = memberService.list(null);
       for (Member m : members) {
-        out.printf("  <option value='%d' %s>%s</option>\n", m.getNo(),
-            task.getOwner().getNo() == m.getNo() ? "selected" : "", m.getName());
+        out.printf("  <option value='%d' %s>%s</option>\n", 
+            m.getNo(),
+            task.getOwner().getNo() == m.getNo() ? "selected" : "",
+                m.getName());
       }
       out.println("</select><br>");
 
@@ -83,8 +81,8 @@ public class TaskDetailHandler extends HttpServlet {
 
       out.println("<tfoot>");
       out.println("<tr><td colspan='2'>");
-      out.println(
-          "<input type='submit' value='변경'> " + "<a href='delete?no=" + task.getNo() + "'>삭제</a> ");
+      out.println("<input type='submit' value='변경'> "
+          + "<a href='delete?no=" + task.getNo() + "'>삭제</a> ");
       out.println("</td></tr>");
       out.println("</tfoot>");
 

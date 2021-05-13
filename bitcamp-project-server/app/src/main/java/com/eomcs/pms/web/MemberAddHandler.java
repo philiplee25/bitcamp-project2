@@ -33,8 +33,7 @@ public class MemberAddHandler extends HttpServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    MemberService memberService =
-        (MemberService) request.getServletContext().getAttribute("memberService");
+    MemberService memberService = (MemberService) request.getServletContext().getAttribute("memberService");
 
     response.setContentType("text/html;charset=UTF-8");
     PrintWriter out = response.getWriter();
@@ -62,21 +61,27 @@ public class MemberAddHandler extends HttpServlet {
         m.setPhoto(filename);
 
         // 썸네일 이미지 생성
-        Thumbnails.of(this.uploadDir + "/" + filename).size(30, 30).outputFormat("jpg")
-            .crop(Positions.CENTER).toFiles(new Rename() {
-              @Override
-              public String apply(String name, ThumbnailParameter param) {
-                return name + "_30x30";
-              }
-            });
+        Thumbnails.of(this.uploadDir + "/" + filename)
+        .size(30, 30)
+        .outputFormat("jpg")
+        .crop(Positions.CENTER)
+        .toFiles(new Rename() {
+          @Override
+          public String apply(String name, ThumbnailParameter param) {
+            return name + "_30x30";
+          }
+        });
 
-        Thumbnails.of(this.uploadDir + "/" + filename).size(80, 80).outputFormat("jpg")
-            .crop(Positions.CENTER).toFiles(new Rename() {
-              @Override
-              public String apply(String name, ThumbnailParameter param) {
-                return name + "_80x80";
-              }
-            });
+        Thumbnails.of(this.uploadDir + "/" + filename)
+        .size(80, 80)
+        .outputFormat("jpg")
+        .crop(Positions.CENTER)
+        .toFiles(new Rename() {
+          @Override
+          public String apply(String name, ThumbnailParameter param) {
+            return name + "_80x80";
+          }
+        });
       }
       memberService.add(m);
 
@@ -102,5 +107,9 @@ public class MemberAddHandler extends HttpServlet {
     out.println("</html>");
   }
 }
+
+
+
+
 
 
