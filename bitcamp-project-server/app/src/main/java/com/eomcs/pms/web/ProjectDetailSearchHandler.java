@@ -2,7 +2,6 @@ package com.eomcs.pms.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,7 +20,8 @@ public class ProjectDetailSearchHandler extends HttpServlet {
   protected void service(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    ProjectService projectService = (ProjectService) request.getServletContext().getAttribute("projectService");
+    ProjectService projectService =
+        (ProjectService) request.getServletContext().getAttribute("projectService");
 
     response.setContentType("text/plain;charset=UTF-8");
     PrintWriter out = response.getWriter();
@@ -48,28 +48,16 @@ public class ProjectDetailSearchHandler extends HttpServlet {
         }
 
         // 2) 프로젝트 정보를 출력
-        out.printf("%d, %s, %s, %s, %s, [%s]\n", 
-            p.getNo(), 
-            p.getTitle(), 
-            p.getStartDate(),
-            p.getEndDate(),
-            p.getOwner().getName(),
-            strBuilder.toString());
+        out.printf("%d, %s, %s, %s, %s, [%s]\n", p.getNo(), p.getTitle(), p.getStartDate(),
+            p.getEndDate(), p.getOwner().getName(), strBuilder.toString());
       }
 
     } catch (Exception e) {
-      StringWriter strWriter = new StringWriter();
-      PrintWriter printWriter = new PrintWriter(strWriter);
-      e.printStackTrace(printWriter);
-      out.println(strWriter.toString());
+      request.setAttribute("exception", e);
+      request.getRequestDispatcher("/error").forward(request, response);
+      return;
     }
   }
 }
-
-
-
-
-
-
 
 
