@@ -32,9 +32,7 @@ public class TaskDeleteHandler extends HttpServlet {
       response.sendRedirect("list");
 
     } catch (Exception e) {
-      request.setAttribute("exception", e);
-      request.getRequestDispatcher("/error").forward(request, response);
-      return;
+      throw new ServletException(e);
     }
   }
 }

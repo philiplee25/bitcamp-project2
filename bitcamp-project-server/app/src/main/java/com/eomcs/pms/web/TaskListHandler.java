@@ -104,9 +104,7 @@ public class TaskListHandler extends HttpServlet {
         out.println("</table>");
       }
     } catch (Exception e) {
-      request.setAttribute("exception", e);
-      request.getRequestDispatcher("/error").forward(request, response);
-      return;
+      throw new ServletException(e);
     }
 
     out.println("</body>");

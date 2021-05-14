@@ -128,9 +128,7 @@ public class ProjectListHandler extends HttpServlet {
       out.println("</form>");
 
     } catch (Exception e) {
-      request.setAttribute("exception", e);
-      request.getRequestDispatcher("/error").forward(request, response);
-      return;
+      throw new ServletException(e);
     }
 
     out.println("</body>");

@@ -71,9 +71,7 @@ public class BoardSearchHandler extends HttpServlet {
       out.printf("<p>%s</p>\n", e.getMessage());
 
     } catch (Exception e) {
-      request.setAttribute("exception", e);
-      request.getRequestDispatcher("/error").forward(request, response);
-      return;
+      throw new ServletException(e);
     }
 
     out.println("</body>");

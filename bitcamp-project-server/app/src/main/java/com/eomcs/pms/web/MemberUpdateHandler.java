@@ -103,9 +103,7 @@ public class MemberUpdateHandler extends HttpServlet {
       response.setHeader("Refresh", "1;url=list");
 
     } catch (Exception e) {
-      request.setAttribute("exception", e);
-      request.getRequestDispatcher("/error").forward(request, response);
-      return;
+      throw new ServletException(e);
     }
 
     out.println("</body>");

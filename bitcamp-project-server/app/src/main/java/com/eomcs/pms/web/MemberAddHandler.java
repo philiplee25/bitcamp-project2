@@ -98,9 +98,7 @@ public class MemberAddHandler extends HttpServlet {
       // - 즉 아직 클라이언트에게 응답한 상태가 아니기 때문에 응답헤더를 설정할 수 있는 것이다.
 
     } catch (Exception e) {
-      request.setAttribute("exception", e);
-      request.getRequestDispatcher("/error").forward(request, response);
-      return;
+      throw new ServletException(e);
     }
 
     out.println("</body>");

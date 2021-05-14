@@ -44,6 +44,16 @@
     <load-on-startup>1</load-on-startup>
   </servlet>
 -->
+  
+  <error-page>
+    <exception-type>javax.servlet.ServletException</exception-type>
+    <location>/error</location>
+  </error-page>     
+  
+  <error-page>
+    <error-code>404</error-code>
+    <location>/error/error404.html</location>
+  </error-page>    
         
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>

@@ -54,9 +54,7 @@ public class BoardUpdateHandler extends HttpServlet {
       out.println("<p>게시글을 변경하였습니다.</p>");
 
     } catch (Exception e) {
-      request.setAttribute("exception", e);
-      request.getRequestDispatcher("/error").forward(request, response);
-      return;
+      throw new ServletException(e);
     }
 
     out.println("</body>");

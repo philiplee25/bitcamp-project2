@@ -69,9 +69,7 @@ public class ProjectDetailHandler extends HttpServlet {
       out.println("</form>");
 
     } catch (Exception e) {
-      request.setAttribute("exception", e);
-      request.getRequestDispatcher("/error").forward(request, response);
-      return;
+      throw new ServletException(e);
     }
     out.println("<p><a href='list'>목록</a></p>");
 
