@@ -17,26 +17,8 @@ public class LoginHandler extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-
-    // 클라이언트가 보낸 쿠키 값 중에서 email 이름의 값을 꺼낸다.
-    String email = "";
-
-    Cookie[] cookies = request.getCookies();
-    if (cookies != null) {
-      for (Cookie cookie : cookies) {
-        if (cookie.getName().equals("email")) {
-          email = cookie.getValue();
-          break;
-        }
-      }
-    }
-
-    response.setContentType("text/html;charset=UTF-8");
-
-    request.setAttribute("email", email);
     response.setContentType("text/html;charset=UTF-8");
     request.getRequestDispatcher("/jsp/login_form.jsp").include(request, response);
-
   }
 
   @Override
