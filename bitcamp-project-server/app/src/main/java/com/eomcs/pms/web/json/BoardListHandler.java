@@ -33,7 +33,7 @@ public class BoardListHandler extends HttpServlet {
         boards = boardService.list();
       }
 
-      // 클라이언트에게 JSON
+      // 클라이언트에게 JSON 형식으로 데이터를 보내기
       response.setContentType("application/json;charset=UTF-8");
       PrintWriter out = response.getWriter();
 
