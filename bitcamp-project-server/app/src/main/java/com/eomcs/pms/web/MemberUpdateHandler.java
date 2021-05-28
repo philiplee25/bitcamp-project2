@@ -3,7 +3,6 @@ package com.eomcs.pms.web;
 import java.io.IOException;
 import java.util.UUID;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +16,6 @@ import net.coobird.thumbnailator.geometry.Positions;
 import net.coobird.thumbnailator.name.Rename;
 
 @SuppressWarnings("serial")
-@MultipartConfig(maxFileSize = 1024 * 1024 * 10)
 @WebServlet("/member/update")
 public class MemberUpdateHandler extends HttpServlet {
 
@@ -86,7 +84,7 @@ public class MemberUpdateHandler extends HttpServlet {
       }
 
       memberService.update(member);
-      response.sendRedirect("list");
+      request.setAttribute("redirect", "list");
 
     } catch (Exception e) {
       throw new ServletException(e);

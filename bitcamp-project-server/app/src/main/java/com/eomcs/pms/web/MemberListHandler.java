@@ -24,8 +24,7 @@ public class MemberListHandler extends HttpServlet {
       List<Member> list = memberService.list(request.getParameter("keyword"));
 
       request.setAttribute("list", list);
-      response.setContentType("text/html;charset=UTF-8");
-      request.getRequestDispatcher("/jsp/member/list.jsp").include(request, response);
+      request.setAttribute("viewUrl", "/jsp/member/list.jsp");
 
     } catch (Exception e) {
       throw new ServletException(e);

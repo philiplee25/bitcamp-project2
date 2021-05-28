@@ -43,7 +43,7 @@ public class TaskUpdateHandler extends HttpServlet {
 
       taskService.update(task);
 
-      response.sendRedirect("list");
+      request.setAttribute("redirect", "list");
 
     } catch (Exception e) {
       throw new ServletException(e);

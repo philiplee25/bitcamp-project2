@@ -22,10 +22,10 @@
 
 <c:forEach items="${list}" var="m">
   <c:if test="${not empty m.photo}">
-    <c:set var="photoUrl">../upload/${m.photo}_30x30.jpg</c:set>
+    <c:set var="photoUrl">../../upload/${m.photo}_30x30.jpg</c:set>
   </c:if>
   <c:if test="${empty m.photo}">
-    <c:set var="photoUrl">../images/person_30x30.jpg</c:set>
+    <c:set var="photoUrl">../../images/person_30x30.jpg</c:set>
   </c:if>
 	<tr> 
 	  <td>${m.no}</td> 

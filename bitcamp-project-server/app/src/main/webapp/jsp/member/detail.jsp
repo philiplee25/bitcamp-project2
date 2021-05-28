@@ -13,11 +13,11 @@
 
 <c:if test="${not empty member}">
   <c:if test="${not empty member.photo}">
-    <c:set var="photo80x80Url">../upload/${member.photo}_80x80.jpg</c:set>
+    <c:set var="photo80x80Url">../../upload/${member.photo}_80x80.jpg</c:set>
     <c:set var="photoUrl">../upload/${member.photo}</c:set>
   </c:if>
   <c:if test="${empty member.photo}">
-    <c:set var="photo80x80Url">../images/person_80x80.jpg</c:set>
+    <c:set var="photo80x80Url">../../images/person_80x80.jpg</c:set>
     <c:set var="photoUrl"></c:set>
   </c:if>
   

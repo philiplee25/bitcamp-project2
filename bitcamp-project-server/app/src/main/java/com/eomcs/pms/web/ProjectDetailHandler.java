@@ -39,9 +39,7 @@ public class ProjectDetailHandler extends HttpServlet {
       request.setAttribute("project", project);
       request.setAttribute("projectMembers", project.getMembers());
       request.setAttribute("members", memberService.list(null));
-
-      response.setContentType("text/html;charset=UTF-8");
-      request.getRequestDispatcher("/jsp/project/detail.jsp").include(request, response);
+      request.setAttribute("viewUrl", "/jsp/project/detail.jsp");
 
     } catch (Exception e) {
       throw new ServletException(e);

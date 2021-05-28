@@ -60,7 +60,7 @@ public class ProjectUpdateHandler extends HttpServlet {
       // DBMS에게 프로젝트 변경을 요청한다.
       projectService.update(project);
 
-      response.sendRedirect("list");
+      request.setAttribute("redirect", "list");
 
     } catch (Exception e) {
       throw new ServletException(e);

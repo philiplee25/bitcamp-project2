@@ -15,13 +15,10 @@ public class ProjectAdd2Handler extends HttpServlet {
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-
     // 클라이언트에서 보낸 값을 세션에 보관한다.
     HttpSession session = request.getSession();
     session.setAttribute("title", request.getParameter("title"));
-
-    response.setContentType("text/html;charset=UTF-8");
-    request.getRequestDispatcher("/jsp/project/form2.jsp").include(request, response);
+    request.setAttribute("viewUrl", "/jsp/project/form2.jsp");
   }
 }
 

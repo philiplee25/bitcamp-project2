@@ -35,7 +35,7 @@ public class BoardDeleteHandler extends HttpServlet {
 
       boardService.delete(no);
 
-      response.sendRedirect("list");
+      request.setAttribute("redirect", "list");
 
     } catch (Exception e) {
       throw new ServletException(e);

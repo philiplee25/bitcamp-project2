@@ -36,7 +36,7 @@ public class ProjectDeleteHandler extends HttpServlet {
 
       projectService.delete(no);
 
-      response.sendRedirect("list");
+      request.setAttribute("redirect", "list");
 
     } catch (Exception e) {
       throw new ServletException(e);

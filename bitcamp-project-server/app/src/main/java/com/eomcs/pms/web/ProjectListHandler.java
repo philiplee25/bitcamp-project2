@@ -42,9 +42,7 @@ public class ProjectListHandler extends HttpServlet {
       }
 
       request.setAttribute("projects", projects);
-
-      response.setContentType("text/html;charset=UTF-8");
-      request.getRequestDispatcher("/jsp/project/list.jsp").include(request, response);
+      request.setAttribute("viewUrl", "/jsp/project/list.jsp");
 
     } catch (Exception e) {
       throw new ServletException(e);

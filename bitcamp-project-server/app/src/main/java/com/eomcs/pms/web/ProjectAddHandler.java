@@ -54,7 +54,7 @@ public class ProjectAddHandler extends HttpServlet {
 
       projectService.add(p);
 
-      response.sendRedirect("list");
+      request.setAttribute("redirect", "list");
 
     } catch (Exception e) {
       throw new ServletException(e);

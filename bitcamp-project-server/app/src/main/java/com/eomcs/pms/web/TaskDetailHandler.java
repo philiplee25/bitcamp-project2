@@ -31,9 +31,7 @@ public class TaskDetailHandler extends HttpServlet {
 
       request.setAttribute("task", task);
       request.setAttribute("members", memberService.list(null));
-
-      response.setContentType("text/html;charset=UTF-8");
-      request.getRequestDispatcher("/jsp/task/detail.jsp").include(request, response);
+      request.setAttribute("viewUrl", "/jsp/task/detail.jsp");
 
     } catch (Exception e) {
       throw new ServletException(e);

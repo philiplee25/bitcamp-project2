@@ -24,8 +24,7 @@ public class MemberDetailHandler extends HttpServlet {
 
       Member m = memberService.get(no);
       request.setAttribute("member", m);
-      response.setContentType("text/html;charset=UTF-8");
-      request.getRequestDispatcher("/jsp/member/detail.jsp").include(request, response);
+      request.setAttribute("viewUrl", "/jsp/member/detail.jsp");
 
     } catch (Exception e) {
       throw new ServletException(e);

@@ -3,7 +3,6 @@ package com.eomcs.pms.web;
 import java.io.IOException;
 import java.util.UUID;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +16,6 @@ import net.coobird.thumbnailator.geometry.Positions;
 import net.coobird.thumbnailator.name.Rename;
 
 @SuppressWarnings("serial")
-@MultipartConfig(maxFileSize = 1024 * 1024 * 10)
 @WebServlet("/member/add")
 public class MemberAddHandler extends HttpServlet {
 
@@ -31,9 +29,7 @@ public class MemberAddHandler extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-
-    response.setContentType("text/html;charset=UTF-8");
-    request.getRequestDispatcher("/jsp/member/form.jsp").include(request, response);
+    request.setAttribute("viewUrl", "/jsp/member/form.jsp");
   }
 
   @Override
@@ -80,7 +76,8 @@ public class MemberAddHandler extends HttpServlet {
         });
       }
       memberService.add(m);
-      response.sendRedirect("list");
+      request.setAttribute("redirect", "list");
+
     } catch (Exception e) {
       throw new ServletException(e);
     }
