@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="output" path="bin/default"/>
 	<classpathentry output="bin/main" kind="src" path="src/main/java">
 		<attributes>
 			<attribute name="gradle_scope" value="main"/>
@@ -27,8 +26,9 @@
 			<attribute name="test" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11/"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
+	<classpathentry kind="output" path="bin/default"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11/"/>
 	<classpathentry sourcepath="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/net.coobird/thumbnailator/0.4.13/371915ee952676ed3fe92835830398c894faa9b9/thumbnailator-0.4.13-sources.jar" kind="lib" path="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/net.coobird/thumbnailator/0.4.13/f6f37507231c0de3b51fd795fabcdef9a51c7343/thumbnailator-0.4.13.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
@@ -54,6 +54,18 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry sourcepath="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/org.springframework/spring-webmvc/5.3.7/8812519c55cc63314cd6002e14daacc90ef26252/spring-webmvc-5.3.7-sources.jar" kind="lib" path="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/org.springframework/spring-webmvc/5.3.7/8437c7a572177a34607abdaef2f6b8088488f5c0/spring-webmvc-5.3.7.jar">
+		<attributes>
+			<attribute name="gradle_used_by_scope" value="main,test"/>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/org.springframework/spring-jdbc/5.3.7/5a601b4c428a677225fd5ecda2f32511578351c2/spring-jdbc-5.3.7-sources.jar" kind="lib" path="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/org.springframework/spring-jdbc/5.3.7/5caf72035a9b8a3a09ef82322cd2497aedddc487/spring-jdbc-5.3.7.jar">
+		<attributes>
+			<attribute name="gradle_used_by_scope" value="main,test"/>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/org.mybatis/mybatis-spring/2.0.6/d169c59dec35a2a7b8b581d0b6ea763ed1fceaa5/mybatis-spring-2.0.6-sources.jar" kind="lib" path="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/org.mybatis/mybatis-spring/2.0.6/eae03712acdf041a3590b816460945d4bd2691bc/mybatis-spring-2.0.6.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
@@ -90,6 +102,12 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry sourcepath="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/org.springframework/spring-web/5.3.7/85b25dc4addfd9b2a39471e0bade79b997df81c0/spring-web-5.3.7-sources.jar" kind="lib" path="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/org.springframework/spring-web/5.3.7/49e6a8f45e77f14ef16f82c0413254ef493b785f/spring-web-5.3.7.jar">
+		<attributes>
+			<attribute name="gradle_used_by_scope" value="main,test"/>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/org.springframework/spring-tx/5.3.7/633a94025fa986564137d68ce0fcc70c1ae29b8a/spring-tx-5.3.7-sources.jar" kind="lib" path="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/org.springframework/spring-tx/5.3.7/98be572c2bf3bd08724363b0bba71bcef59c4739/spring-tx-5.3.7.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
