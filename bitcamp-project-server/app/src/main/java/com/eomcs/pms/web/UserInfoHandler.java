@@ -7,7 +7,6 @@ import com.eomcs.util.PageController;
 
 @Component("/userInfo")
 public class UserInfoHandler implements PageController {
-
   @Override
   public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
     return "/jsp/user_info.jsp";

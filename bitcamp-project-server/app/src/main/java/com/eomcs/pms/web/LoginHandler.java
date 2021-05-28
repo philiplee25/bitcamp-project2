@@ -19,9 +19,11 @@ public class LoginHandler implements PageController {
 
   @Override
   public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
     if (request.getMethod().equals("GET")) {
       return "/jsp/login_form.jsp";
-    }
+    } 
+
     String email = request.getParameter("email");
     String password = request.getParameter("password");
 
@@ -36,19 +38,17 @@ public class LoginHandler implements PageController {
       cookie.setMaxAge(0);  // 유효기간(초)을 0으로 하면 웹브라우저는 email 이름으로 저장된 쿠키를 제거한다.
       response.addCookie(cookie);
     }
-    
+
     Member member = memberService.get(email, password);
 
-      if (member == null) {
-        // 로그인 실패한다면 세션 객체의 모든 내용을 삭제한다.
-        request.getSession().invalidate(); 
-        return "/jsp/login_fail.jsp";
+    if (member == null) {
+      request.getSession().invalidate(); 
+      return "/jsp/login_fail.jsp";
 
-      } else {
-        // 로그인 성공한다면, 로그인 사용자 정보를 세션 객체에 보관한다.
-        request.getSession().setAttribute("loginUser", member);
-        return "/jsp/login_success.jsp";
-      }
+    } else {
+      request.getSession().setAttribute("loginUser", member);
+      return "/jsp/login_success.jsp";
+    }
   }
 }
 

@@ -11,7 +11,7 @@ public class LogoutHandler implements PageController {
   @Override
   public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
     request.getSession().invalidate();
-    return "login";
+    return "redirect:login";
   }
 }
 

@@ -24,24 +24,28 @@ public class DispatcherServlet extends HttpServlet {
     // 어느 서블릿을 요청했는지 알아내기
     String controllerPath = request.getPathInfo();
 
-    Map<String, Object> beanContainer =
-        (Map<String, Object>) this.getServletContext().getAttribute("beanContainer");
+    Map<String,Object> beanContainer = 
+        (Map<String,Object>) this.getServletContext().getAttribute("beanContainer");
 
+    // 클라이언트가 요청한 페이지 컨트롤러를 꺼낸다.
     PageController pageController = (PageController) beanContainer.get(controllerPath);
-
     if (pageController == null) {
-      throw new ServletException("요청한 자원이 없습니다.");
+      throw new ServletException("요청한 자원이 없습니다!");
     }
 
-    // 해당 페이지 컨트롤러로 위임한다.
     response.setContentType("text/html;charset=UTF-8");
+
     try {
+      // 페이지 컨트롤러에게 실행을 위임한다.
       String url = pageController.execute(request, response);
 
+      // 페이지 컨트롤러의 리턴 URL이 리다이렉트를 요구한다면,
       if (url.startsWith("redirect:")) {
         response.sendRedirect(url.substring(9));
         return;
       }
+
+      // 페이지 컨트롤러가 알려준 JSP를 인클루드 한다.
       request.getRequestDispatcher(url).include(request, response);
 
     } catch (Exception e) {

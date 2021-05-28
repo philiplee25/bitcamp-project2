@@ -1,10 +1,6 @@
 package com.eomcs.pms.web;
 
-import java.io.IOException;
 import java.sql.Date;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.eomcs.pms.domain.Member;
@@ -12,52 +8,42 @@ import com.eomcs.pms.domain.Task;
 import com.eomcs.pms.service.MemberService;
 import com.eomcs.pms.service.ProjectService;
 import com.eomcs.pms.service.TaskService;
+import com.eomcs.util.Component;
+import com.eomcs.util.PageController;
 
-@SuppressWarnings("serial")
-@WebServlet("/task/add")
-public class TaskAddHandler extends HttpServlet {
+@Component("/task/add")
+public class TaskAddHandler implements PageController {
 
-  @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+  TaskService taskService;
+  ProjectService projectService;
+  MemberService memberService;
 
-    ProjectService projectService = (ProjectService) request.getServletContext().getAttribute("projectService");
-    MemberService memberService = (MemberService) request.getServletContext().getAttribute("memberService");
-
-    try {
-      request.setAttribute("projects", projectService.list());
-      request.setAttribute("members", memberService.list(null));
-      request.setAttribute("viewUrl", "/jsp/task/form.jsp");
-
-    } catch (Exception e) {
-      throw new ServletException(e);
-    }
+  public TaskAddHandler(TaskService taskService, ProjectService projectService, MemberService memberService) {
+    this.taskService = taskService;
+    this.projectService = projectService;
+    this.memberService = memberService;
   }
 
   @Override
-  protected void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
-
-    TaskService taskService = (TaskService) request.getServletContext().getAttribute("taskService");
-
-    try {
-      Task t = new Task();
-      t.setProjectNo(Integer.parseInt(request.getParameter("projectNo")));
-      t.setContent(request.getParameter("content"));
-      t.setDeadline(Date.valueOf(request.getParameter("deadline")));
-      t.setStatus(Integer.parseInt(request.getParameter("status")));
-
-      Member owner = new Member();
-      owner.setNo(Integer.parseInt(request.getParameter("owner")));
-      t.setOwner(owner);
-
-      taskService.add(t);
-
-      request.setAttribute("redirect", "list");
-
-    } catch (Exception e) {
-      throw new ServletException(e);
+  public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    if (request.getMethod().equals("GET")) {
+      request.setAttribute("projects", projectService.list());
+      request.setAttribute("members", memberService.list(null));
+      return "/jsp/task/form.jsp";
     }
 
+    Task t = new Task();
+    t.setProjectNo(Integer.parseInt(request.getParameter("projectNo")));
+    t.setContent(request.getParameter("content"));
+    t.setDeadline(Date.valueOf(request.getParameter("deadline")));
+    t.setStatus(Integer.parseInt(request.getParameter("status")));
+
+    Member owner = new Member();
+    owner.setNo(Integer.parseInt(request.getParameter("owner")));
+    t.setOwner(owner);
+
+    taskService.add(t);
+
+    return "redirect:list";
   }
 }

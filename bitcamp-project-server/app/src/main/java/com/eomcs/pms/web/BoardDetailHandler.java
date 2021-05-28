@@ -18,12 +18,10 @@ public class BoardDetailHandler implements PageController {
 
   @Override
   public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
     int no = Integer.parseInt(request.getParameter("no"));
-
-      Board board = boardService.get(no);
-      request.setAttribute("board", board);
-      return "/jsp/board/detail.jsp";
+    Board board = boardService.get(no);
+    request.setAttribute("board", board);
+    return "/jsp/board/detail.jsp";
   }
 }
 

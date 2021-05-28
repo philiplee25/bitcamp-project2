@@ -1,34 +1,27 @@
 package com.eomcs.pms.web;
 
-import java.io.IOException;
 import java.util.List;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.eomcs.pms.domain.Member;
 import com.eomcs.pms.service.MemberService;
+import com.eomcs.util.Component;
+import com.eomcs.util.PageController;
 
-@SuppressWarnings("serial")
-@WebServlet("/member/list") 
-public class MemberListHandler extends HttpServlet {
+@Component("/member/list") 
+public class MemberListHandler implements PageController {
+
+  MemberService memberService;
+
+  public MemberListHandler(MemberService memberService) {
+    this.memberService = memberService;
+  }
 
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
-
-    MemberService memberService = (MemberService) request.getServletContext().getAttribute("memberService");
-
-    try { 
-      List<Member> list = memberService.list(request.getParameter("keyword"));
-
-      request.setAttribute("list", list);
-      request.setAttribute("viewUrl", "/jsp/member/list.jsp");
-
-    } catch (Exception e) {
-      throw new ServletException(e);
-    }
+  public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    List<Member> list = memberService.list(request.getParameter("keyword"));
+    request.setAttribute("list", list);
+    return "/jsp/member/list.jsp";
   }
 }
 

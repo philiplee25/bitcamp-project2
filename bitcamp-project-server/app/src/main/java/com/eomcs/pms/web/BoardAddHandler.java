@@ -19,22 +19,22 @@ public class BoardAddHandler implements PageController {
 
   @Override
   public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
     if (request.getMethod().equals("GET")) {
       return "/jsp/board/form.jsp";
     }
 
-      Board b = new Board();
+    Board b = new Board();
+    b.setTitle(request.getParameter("title"));
+    b.setContent(request.getParameter("content"));
 
-      b.setTitle(request.getParameter("title"));
-      b.setContent(request.getParameter("content"));
+    // 작성자는 로그인 사용자이다.
+    HttpServletRequest httpRequest = request;
+    Member loginUser = (Member) httpRequest.getSession().getAttribute("loginUser");
+    b.setWriter(loginUser);
 
-      // 작성자는 로그인 사용자이다.
-      HttpServletRequest httpRequest = request;
-      Member loginUser = (Member) httpRequest.getSession().getAttribute("loginUser");
-      b.setWriter(loginUser);
-
-      boardService.add(b);
-      return "redirect:list";
+    boardService.add(b);
+    return "redirect:list";
   }
 }
 
