@@ -35,7 +35,7 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry sourcepath="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/javax.servlet/javax.servlet-api/4.0.1/49a9da44db6e6b5f44ce15ddfcfe2b6666151b25/javax.servlet-api-4.0.1-sources.jar" kind="lib" path="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/javax.servlet/javax.servlet-api/4.0.1/a27082684a2ff0bf397666c3943496c44541d1ca/javax.servlet-api-4.0.1.jar">
+	<classpathentry sourcepath="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/javax.servlet/jstl/1.2/2f5877ef15adb721421e80f5aa2b6fe069eec8ed/jstl-1.2-sources.jar" kind="lib" path="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/javax.servlet/jstl/1.2/74aca283cd4f4b4f3e425f5820cda58f44409547/jstl-1.2.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
@@ -71,7 +71,7 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry sourcepath="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.8.7/ebd6d6a08aad489c682122e05a47a7e63608e368/gson-2.8.7-sources.jar" kind="lib" path="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.8.7/69d9503ea0a40ee16f0bcdac7e3eaf83d0fa914a/gson-2.8.7.jar">
+	<classpathentry sourcepath="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/org.apache.logging.log4j/log4j-core/2.14.1/7f640e4855733d9532eed15af62c54956e7b8224/log4j-core-2.14.1-sources.jar" kind="lib" path="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/org.apache.logging.log4j/log4j-core/2.14.1/9141212b8507ab50a45525b545b39d224614528b/log4j-core-2.14.1.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
@@ -83,7 +83,7 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry sourcepath="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/javax.servlet/jstl/1.2/2f5877ef15adb721421e80f5aa2b6fe069eec8ed/jstl-1.2-sources.jar" kind="lib" path="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/javax.servlet/jstl/1.2/74aca283cd4f4b4f3e425f5820cda58f44409547/jstl-1.2.jar">
+	<classpathentry sourcepath="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/javax.servlet/javax.servlet-api/4.0.1/49a9da44db6e6b5f44ce15ddfcfe2b6666151b25/javax.servlet-api-4.0.1-sources.jar" kind="lib" path="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/javax.servlet/javax.servlet-api/4.0.1/a27082684a2ff0bf397666c3943496c44541d1ca/javax.servlet-api-4.0.1.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
@@ -126,6 +126,12 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry sourcepath="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/org.springframework/spring-core/5.3.7/847b9fc65843b41039a89b236f2d97c8dd0dbc7e/spring-core-5.3.7-sources.jar" kind="lib" path="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/org.springframework/spring-core/5.3.7/4aad1b62bd347a806fe693c9d67b376a3ad8151c/spring-core-5.3.7.jar">
+		<attributes>
+			<attribute name="gradle_used_by_scope" value="main,test"/>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/org.apache.logging.log4j/log4j-api/2.14.1/b2327c47ca413c1ec183575b19598e281fcd74d8/log4j-api-2.14.1-sources.jar" kind="lib" path="C:/Users/bitcamp/.gradle/caches/modules-2/files-2.1/org.apache.logging.log4j/log4j-api/2.14.1/cd8858fbbde69f46bce8db1152c18a43328aae78/log4j-api-2.14.1.jar">
 		<attributes>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
